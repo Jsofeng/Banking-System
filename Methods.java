@@ -5,7 +5,7 @@ public class Main {
 
   static void showBalance(double balance) {
     System.out.println("**************");
-    System.out.println("%.2f%\n", balance);
+    System.out.println("%.2f\n", balance);
   }
 
   static double deposit() {
@@ -39,4 +39,5 @@ public class Main {
   
   
 }
+
 
