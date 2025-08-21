@@ -18,14 +18,21 @@ public class Main {
 
     while(isOpen) {
       switch(choice) {
-        case 1 -> 
-        case 2 ->
-        case 3 ->
-        case 4 ->
+        case 1 -> showBalance(balance);
+        case 2 -> {
+                balance += withDraw();
+                System.out.println("NEW BALANCE: $" + "%.2f\n", balance);
+        } 
+        case 3 -> {
+                balance -= withDraw(balance);
+                System.out.println("NEW BALANCE: $" + "%.2f\n", balance);
+        }
+        case 4 -> isRunning = false;
         default -> System.out.println("INVALID NUMBER CHOOSE BETWEEN 1 - 4");
       }
     }
     scan.close();
   }
 }
+
 
