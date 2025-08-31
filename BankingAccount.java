@@ -1,0 +1,81 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class BankingAccount {
+
+    static Scanner scan = new Scanner(System.in);
+    String accountNumber;
+    private String accountHolder;
+    double balance;
+    private List<String> transactionHistory;
+
+    public BankingAccount(String accountNumber, String accountHolder) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.balance = 0.0;
+        this.transactionHistory = new ArrayList<>();
+    }
+    public String accountDetails() {
+        return "Account Number: " + this.accountNumber
+                + "\nAccount Holder: " + this.accountHolder
+                + "\nBalance: $" + String.format("%.2f", this.balance);
+    }
+    public void recordTransaction(String transaction) {
+        this.transactionHistory.add(transaction);
+    }
+    public List<String> getTransactionHistory() {
+        return this.transactionHistory;
+    }
+
+    public void closeAccount() {
+        this.balance = 0.0;
+        this.transactionHistory.clear();
+        System.out.println("Account: " + this.accountNumber + "has been closed" );
+    }
+
+    public void setAccountInfo(String accountNumber, String accountHolder) {
+        System.out.println("PLEASE ENTER DEBIT CARD ACCOUNT NUMBER: "); // continue
+        accountNumber = scan.nextLine();
+        System.out.println("PLEASE ENTER ACCOUNT HOLDER NAME: ");
+        accountHolder = scan.nextLine();
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+    }
+
+    public void transferFunds(BankingAccount newAccount, double amount) {
+        System.out.println("Which account would you like to transfer to? ");
+        String toAccount = scan.nextLine();
+        while(!toAccount.matches(newAccount.accountNumber)) {
+            System.out.println("Account not found. Please try again.");
+            toAccount = scan.nextLine();
+        }
+
+        if(toAccount.matches(newAccount.accountNumber)) {
+            System.out.println("How much would you like to transfer? ");
+            amount = scan.nextDouble();
+            while(amount > balance) {
+                System.out.println("Insufficient funds. Please try again.");
+                amount = scan.nextDouble();
+
+            }
+            this.balance -= amount;
+            newAccount.balance += amount;
+            System.out.println("Transfer successful. ACC #:" + this.accountNumber + " New balance: $" + String.format("%.2f", this.balance));
+            System.out.println(newAccount.accountNumber + " New balance: $" + String.format("%.2f", newAccount.balance));
+            System.out.println();
+           /* System.out.println("Transfer more? (Y/N)");
+            char response = scan.nextLine().toUpperCase().charAt(0);
+
+            if(response == 'Y') {
+                transferFunds(newAccount,amount);
+            }  else if (response == 'N') { */
+                System.out.println("Returning receipt...");
+                System.out.println(this.accountNumber + " transferred: $" + String.format("%.2f", amount) + " to " + newAccount.accountNumber
+                                   + "\n" + this.accountNumber + ": New balance: $" + String.format("%.2f", this.balance)
+                                   + "\n" + newAccount.accountNumber + ": New balance: $" + String.format("%.2f", newAccount.balance));
+            }
+        }
+    }
+
+
