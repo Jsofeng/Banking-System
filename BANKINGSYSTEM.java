@@ -10,6 +10,7 @@ public class Banking {
         boolean isOpen = true;
         int choice;
 
+
         while (isOpen)
         {
             System.out.println("*****************");
@@ -19,7 +20,8 @@ public class Banking {
             System.out.println("3: WITHDRAW");
             System.out.println("4: REQUEST LOAN");
             System.out.println("5. REQUEST CREDIT CARD");
-            System.out.println("6: EXIT");
+            System.out.println("6: CREATE ACCOUNT");
+            System.out.println("7: EXIT");
             System.out.println("******************");
             System.out.println("CHOOSE A NUMBER 1 - 6");
 
@@ -114,7 +116,7 @@ public class Banking {
                     break;
                 }
                 case 4: {
-                    BankingMethods.loan(balance);
+                    BankingMethods.loan(balance); // balance is already a variable assigned at the top
                     break;
                 }
                 case 5:
@@ -164,8 +166,13 @@ public class Banking {
                     break;
                 }
 
-
-                case 6:
+                case 6: {
+                    String accountNumber = ""; // aren't assigned yet even though the method assigns then
+                    String accountHolder = ""; // same here
+                    BankingMethods.createAccount(accountNumber, accountHolder);
+                    break;
+                }
+                case 7:
                 {
                     System.out.println("THANK YOU FOR BANKING WITH AMEX");
                     isOpen = false;
