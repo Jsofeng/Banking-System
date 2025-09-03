@@ -35,12 +35,13 @@ public class BankingAccount {
     }
 
     public void setAccountInfo(String accountNumber, String accountHolder) {
-        System.out.println("PLEASE ENTER DEBIT CARD ACCOUNT NUMBER: "); 
-        while(!accountNumber.matches("\\d{15}") {
-            System.out.println("INVALID ACCOUNT NUMBER. PLEASE TRY AGAIN");
+        System.out.println("PLEASE ENTER DEBIT CARD ACCOUNT NUMBER: ");
+        accountNumber = scan.nextLine();
+        while(!accountNumber.matches("\\d{15}")) {
+            System.out.println("INVALID ACCOUNT NUMBER. PLEASE TRY AGAIN: ");
             accountNumber = scan.nextLine();
         }
-        accountNumber = scan.nextLine();
+
         System.out.println("PLEASE ENTER ACCOUNT HOLDER NAME: ");
         accountHolder = scan.nextLine();
         this.accountNumber = accountNumber;
