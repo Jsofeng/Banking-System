@@ -1,7 +1,13 @@
+import java.util.Random;
 import java.util.Scanner;
-class BankingMethods
+class BankingMethods extends BankingAccount
 {
     static Scanner scan = new Scanner(System.in);
+
+    public BankingMethods(String accountNumber, String accountHolder)
+    {
+        super(accountNumber, accountHolder);
+    }
 
 
     static void showBalance(double balance)
@@ -48,12 +54,22 @@ class BankingMethods
     {
 
         System.out.println("VERIFYING INFORMATION...");
-        System.out.println("PLEASE CHECK IF INFORMATION IS CORRECT " + "[ NAME: " + name + ", AGE: " + age + ", SSN: " + ssn + " ]");
+        System.out.println(
+                "PLEASE CHECK IF INFORMATION IS CORRECT " + "[ NAME: " + name + ", AGE: " + age + ", SSN: " + ssn +
+                " ]");
         System.out.println("IF CORRECT, ENTER Y, IF NOT, ENTER N");
         char response = scan.next().toUpperCase().charAt(0);
         if (response == 'Y')
         {
             System.out.println("APPROVED! CREDIT CARD WILL BE SENT WITHIN 1-5 BUSINESS DAYS");
+            System.out.println("5 BUSINESS DAYS LATER...");
+            Random rand = new Random();
+            long min = 100000000000000L;
+            long max = 999999999999999L;
+            long cardNumber =
+                    min + ((long) (rand.nextDouble() * (max - min + 1))); // long turns the double into a whole number
+            System.out.println("CONGRATULATIONS " + name + ", YOUR CREDIT CARD NUMBER IS: " + "[" + cardNumber + "]");
+            System.out.println("PLEASE ACTIVATE YOUR CARD UPON RECEIPT");
         }
         else if (response == 'N')
         {
@@ -114,5 +130,50 @@ class BankingMethods
             System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN");
             System.out.println("SUFFICIENT FUNDS: " + (10000.00 - balance) + " MORE TO QUALIFY");
         }
+
+
     }
+
+    static void createAccount(String accountNumber, String accountHolder)
+    {
+        System.out.println("CREATE NEW ACCOUNT");
+        System.out.println("PLEASE ENTER ACCOUNT HOLDER FULL NAME: ");
+        accountHolder = scan.nextLine();
+        while (!accountHolder.matches("[a-zA-Z ]+"))
+        {
+            System.out.println("LETTERS ONLY, PLEASE TRY AGAIN");
+            System.out.println("PLEASE ENTER ACCOUNT HOLDER NAME: ");
+            accountHolder = scan.nextLine();
+
+        }
+        System.out.println("PLEASE ENTER AGE: ");
+        int age = scan.nextInt();
+        while (age < 18)
+        {
+            System.out.println("YOU MUST BE 18 OR OLDER TO CREATE AN ACCOUNT, PLEASE TRY AGAIN");
+            System.out.println("PLEASE ENTER AGE: ");
+            age = scan.nextInt();
+        }
+        System.out.println("APPROVED! CREATING ACCOUNT...");
+        System.out.println();
+        System.out.println("HERE IS YOUR TEMPORARY DEBIT CARD");
+        System.out.println("-----------------------------------");
+        System.out.println();
+        System.out.println("----------------------------------------------");
+        System.out.println("V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*V*");
+        System.out.println("----------------------------------------------");
+        System.out.println("*|" + "AMERICAN EXPRESS                      |*");
+        System.out.println(">| _-------_                                 |<");
+        System.out.println("*| I--I I--I                        }}}      |*");
+        System.out.println(">| I__I_I__I                     }}}         |<");
+        System.out.println("*|                              }}}   7997   |*");
+        System.out.println(">|                               }}}         |<");
+        System.out.println("*|                                  }}}      |*");
+        System.out.println(">|" + "|" + accountHolder + "|               |<");
+        System.out.println("*_____________________________________________");
+        System.out.println("^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*");
+
+    }
+
+
 }
