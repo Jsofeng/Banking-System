@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDateTime;
 
 public class BankingAccount {
-
+    DateTimeFormatter currentTime = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     static Scanner scan = new Scanner(System.in);
     String accountNumber;
     private String accountHolder;
@@ -22,7 +23,9 @@ public class BankingAccount {
                 + "\nBalance: $" + String.format("%.2f", this.balance);
     }
     public void recordTransaction(String transaction) {
+        String dtf = LocalDateTime.now().format(currentDateTime);
         this.transactionHistory.add(transaction);
+        System.out.println("Transaction recorded " + transaction + " on " + dtf);
     }
     public List<String> getTransactionHistory() {
         return this.transactionHistory;
