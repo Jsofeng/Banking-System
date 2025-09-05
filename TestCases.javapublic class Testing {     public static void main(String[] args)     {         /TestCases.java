@@ -1,10 +1,9 @@
-/*
 public class Testing
 {
     public static void main(String[] args)
     {
         // Example usage
-        BankingMethods account = new BankingMethods("123456789101112", "John Doe");
+        BankingMethods account = new BankingMethods("", "");
         double johnBalance = 0;
         account.setAccountInfo("123456789101112", "John Doe");
         double johndeposit = BankingMethods.deposit();
@@ -25,4 +24,3 @@ public class Testing
 
     }
 }
-*/
