@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.time.LocalDateTime;
 
 public class BankingAccount {
-    DateTimeFormatter currentTime = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    DateTimeFormatter currentDateTime = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     static Scanner scan = new Scanner(System.in);
     String accountNumber;
     private String accountHolder;
@@ -60,6 +60,7 @@ public class BankingAccount {
         }
 
         if(toAccount.matches(newAccount.accountNumber)) {
+            String transferDAT = LocalDateTime.now().format(currentDateTime);
             System.out.println("How much would you like to transfer? ");
             amount = scan.nextDouble();
             while(amount > balance) {
@@ -70,7 +71,7 @@ public class BankingAccount {
             this.balance -= amount;
             newAccount.balance += amount;
             System.out.println("Transfer successful. ACC #:" + this.accountNumber + " New balance: $" + String.format("%.2f", this.balance));
-            System.out.println(newAccount.accountNumber + " New balance: $" + String.format("%.2f", newAccount.balance));
+            System.out.println(newAccount.accountNumber + " New balance: $" + String.format("%.2f", newAccount.balance) + "Date" + transferDAT);
             System.out.println();
            /* System.out.println("Transfer more? (Y/N)");
             char response = scan.nextLine().toUpperCase().charAt(0);
