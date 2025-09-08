@@ -175,5 +175,9 @@ class BankingMethods extends BankingAccount
 
     }
 
+    private static double remainingDue = 0;
+
+    
+
 
 }
