@@ -177,6 +177,49 @@ class BankingMethods extends BankingAccount
 
     private static double remainingDue = 0;
 
+     static void creditCardPayment(double balance)
+    {
+
+
+        if (remainingDue <= 0) {
+            Random randAmount = new Random();
+            long min = 10000L;
+            long max = 250000L;
+            remainingDue = min + ((randAmount.nextDouble() * (max - min + 1)));
+            System.out.printf("NEW CREDIT CARD BILL GENERATED: $%.2f%n", remainingDue);
+        }
+
+        // Show current due
+        System.out.printf("YOUR CURRENT AMOUNT DUE IS: $%.2f%n", remainingDue);
+        System.out.print("PAY NOW? (Y/N): ");
+        char response = scan.next().toUpperCase().charAt(0);
+
+        if (response == 'Y') {
+            if (balance >= remainingDue) {
+                // Full payment
+                balance -= remainingDue;
+                System.out.printf("PAYMENT SUCCESSFUL! Remaining Balance: $%.2f%n", balance);
+                remainingDue = 0; // debt cleared
+            } else {
+                // Partial payment
+                System.out.printf("INSUFFICIENT FUNDS. YOU HAVE $%.2f%n", balance);
+                System.out.print("WOULD YOU LIKE TO PAY PARTIAL? (Y/N): ");
+                char partial = scan.next().toUpperCase().charAt(0);
+
+                if (partial == 'Y') {
+                    remainingDue -= balance;
+                    System.out.printf("PARTIAL PAYMENT MADE. STILL DUE: $%.2f%n", remainingDue);
+                    balance = 0; // drained account
+                } else {
+                    System.out.println("PAYMENT CANCELLED, RETURNING TO MENU...");
+                }
+            }
+        } else {
+            System.out.printf("PAYMENT SKIPPED. STILL DUE: $%.2f%n", remainingDue);
+        }
+    }
+    
+
     
 
 
