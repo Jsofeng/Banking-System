@@ -123,6 +123,7 @@ class BankingMethods extends BankingAccount
                 System.out.println();
                 System.out.printf("BALANCE: $: " + "%.2f\n", balance);
                 System.out.printf("LOAN AMOUNT: $" + "%.2f\n", loanAmount);
+
             }
         }
         else
@@ -133,9 +134,68 @@ class BankingMethods extends BankingAccount
 
 
     }
+    private static double remainingLoan = 0;
 
-    private static double remainingLoan() = 0;
-    
+    static void payOffLoan(double balance)
+    {
+        if (remainingLoan == 0)
+        {
+            System.out.println("DEBT FREE!!");
+        }
+        System.out.print("Enter Amount Loaned: $");
+        double loaned = scan.nextDouble();
+        double loanInterest = 0.5;
+        System.out.print("PAY OFF LOAN? (Y/N)\t");
+        char response = scan.next().toUpperCase().charAt(0);
+
+        if (response == 'Y')
+        {
+            System.out.print("PARTIAL PAYMENT OR FULL PAYMENT? (P/F): ");
+            char pOrf = scan.next().toUpperCase().charAt(0);
+
+
+            if (pOrf == 'P')
+            {
+                System.out.print("Enter Amount To Pay Off: $");
+                double payingOff = scan.nextDouble();
+
+                while(balance < payingOff) {
+                    System.out.print("PLEASE RE-ENTER AMOUNT:$ ");
+                    payingOff = scan.nextDouble();
+
+                }
+
+                if (balance >= payingOff)
+                {
+                    remainingLoan = loaned - payingOff;
+                    System.out.println("PARTIAL LOAN PAID: $" + String.format("%.2f", payingOff) +
+                                       " REMAINING LOAN DEBT --> INTEREST APPLIED: $" +
+                                       String.format("%.2f", (remainingLoan * loanInterest) + remainingLoan));
+                }
+
+
+            }
+            if (pOrf == 'F' && balance >= loaned)
+            {
+
+                balance -= loaned;
+                System.out.println();
+                System.out.println("LOAN PAID OFF!!");
+                remainingLoan = 0;
+
+            } else if (balance < loaned) {
+                System.out.println();
+                System.out.println("-------------------");
+                System.out.println("CANNOT PAY IN FULL");
+                System.out.println("-------------------");
+            }
+
+        }
+        else if (response == 'N')
+        {
+            System.out.println("PAYMENT SKIPPED, INTEREST APPLIED: 2.5%");
+        }
+    }
     static void createAccount(String accountNumber, String accountHolder)
     {
         System.out.println("CREATE NEW ACCOUNT");
@@ -179,7 +239,7 @@ class BankingMethods extends BankingAccount
 
     private static double remainingDue = 0;
 
-     static void creditCardPayment(double balance)
+    static void creditCardPayment(double balance)
     {
 
 
@@ -219,10 +279,8 @@ class BankingMethods extends BankingAccount
         } else {
             System.out.printf("PAYMENT SKIPPED. STILL DUE: $%.2f%n", remainingDue);
         }
+
+
     }
-    
 
-    
-
-
-}
+    }
