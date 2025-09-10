@@ -134,6 +134,8 @@ class BankingMethods extends BankingAccount
 
     }
 
+    private static double remainingLoan() = 0;
+    
     static void createAccount(String accountNumber, String accountHolder)
     {
         System.out.println("CREATE NEW ACCOUNT");
