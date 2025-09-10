@@ -19,10 +19,11 @@ public class Banking {
             System.out.println("2: DEPOSIT");
             System.out.println("3: WITHDRAW");
             System.out.println("4: REQUEST LOAN");
-            System.out.println("5. REQUEST CREDIT CARD");
-            System.out.println("6: CREDIT CARD PAYMENT");
-            System.out.println("7: CREATE ACCOUNT");
-            System.out.println("8: EXIT");
+            System.out.println("5: PAY OFF LOAN");
+            System.out.println("6: REQUEST CREDIT CARD");
+            System.out.println("7: CREDIT CARD PAYMENT");
+            System.out.println("8: CREATE ACCOUNT");
+            System.out.println("9: EXIT");
             System.out.println("******************");
             System.out.println("CHOOSE A NUMBER 1 - 6");
 
@@ -167,16 +168,23 @@ public class Banking {
                     break;
                 }
 
-                case 6 {
-                    
+                case 6: {
+                    BankingMethods.payOffLoan(balance);
+                    break;
                 }
+
                 case 7: {
+                    BankingMethods.creditCardPayment(balance);
+                    break;
+                }
+
+                case 8: {
                     String accountNumber = ""; // aren't assigned yet even though the method assigns then
                     String accountHolder = ""; // same here
                     BankingMethods.createAccount(accountNumber, accountHolder);
                     break;
                 }
-                case 8:
+                case 9:
                 {
                     System.out.println("THANK YOU FOR BANKING WITH AMEX");
                     isOpen = false;
