@@ -61,7 +61,7 @@ public class BankingAccount {
 
         if(toAccount.matches(newAccount.accountNumber)) {
             String transferDAT = LocalDateTime.now().format(currentDateTime);
-            System.out.println("How much would you like to transfer? ");
+            System.out.print("How much would you like to transfer? $");
             amount = scan.nextDouble();
             while(amount > balance) {
                 System.out.println("Insufficient funds. Please try again.");
