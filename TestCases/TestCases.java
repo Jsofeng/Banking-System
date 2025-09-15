@@ -1,8 +1,8 @@
-public class Testing
+public class TestCases
 {
     public static void main(String[] args)
     {
-        // Example usage
+        
         BankingMethods account = new BankingMethods("", "");
         double johnBalance = 0;
         account.setAccountInfo("123456789101112", "John Doe");
