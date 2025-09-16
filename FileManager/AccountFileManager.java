@@ -14,7 +14,7 @@ public class AccountFileManager {
             String dtf = LocalDateTime.now().format(currentDateTime);
             fw.write("[" + account.accountNumber + "] " + ", " +
                      "[" + account.accountHolder +"] " + ", " +
-                    "[BALANCE: $" + String.format("%.2f", account.balance) + "] " + dtf + "\n");
+                    "[BALANCE: $" + String.format("%.2f", account.balance) + "] -----> " + dtf + "\n");
             System.out.println("[" + account.accountNumber + "]" + " SAVED TO SYSTEM ");
 
         }catch (IOException e) {
@@ -29,7 +29,7 @@ public class AccountFileManager {
          for(DataBase account : accounts) {
              fw.write("[" + account.accountNumber + "] " + ", " +
                      "[" + account.accountHolder +"] " + ", " +
-                     "[BALANCE: $" + String.format("%.2f", account.balance) + "] " + dtf + "\n");
+                     "[BALANCE: $" + String.format("%.2f", account.balance) + "] -----> " + dtf + "\n");
          }
             System.out.println("ACCOUNTS SAVED TO SYSTEM " + accounts + "\t"); // java automatically applies .toString because of string concatenation
         } catch (IOException e) {

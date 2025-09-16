@@ -1,14 +1,10 @@
-import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 
 public class DBTestcases {
     public static void main(String[] args) {
-        DateTimeFormatter currentDateTime =  DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss");
-        String dtf = LocalDateTime.now().format(currentDateTime);
         Scanner scan = new Scanner(System.in);
 
         // Create accounts
@@ -38,7 +34,7 @@ public class DBTestcases {
 
         List<String> accounts = AccountFileManager.loadAccounts(); // BufferedReader
         for(String acc : accounts) {
-            System.out.println(acc + "\t" + dtf);
+            System.out.println(acc);
         }
 
         scan.close();
