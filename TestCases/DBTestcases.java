@@ -1,16 +1,20 @@
+import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-public class DBTestCases {
+public class DBTestcases {
     public static void main(String[] args) {
+        DateTimeFormatter currentDateTime =  DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss");
+        String dtf = LocalDateTime.now().format(currentDateTime);
         Scanner scan = new Scanner(System.in);
 
         // Create accounts
         DataBase acc1C = new ChequingAccount("123456789101112", "John McQueen");
         DataBase acc2S = new SavingsAccount("200034567891", "Sarah Smith");
         DataBase acc2C = new ChequingAccount("696969696969", "sixty-Nine");
-        
         // Perform transactions
         acc1C.deposit(100000);
         acc2S.deposit(100000);
@@ -34,7 +38,7 @@ public class DBTestCases {
 
         List<String> accounts = AccountFileManager.loadAccounts(); // BufferedReader
         for(String acc : accounts) {
-            System.out.println(acc);
+            System.out.println(acc + "\t" + dtf);
         }
 
         scan.close();
