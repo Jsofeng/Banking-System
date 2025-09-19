@@ -26,11 +26,14 @@ public class DBTestcases {
         AccountFileManager.saveAccount(acc2S);
         AccountFileManager.saveAccount(acc2C);
 
+
         List<DataBase> addAccounts = new ArrayList<>();
         addAccounts.add(new ChequingAccount("100231313131311", "lightning McQueen"));
         addAccounts.add(new SavingsAccount("9204810983131", "Lewis Hamilton"));
 
         AccountFileManager.saveAccounts(addAccounts);
+
+        acc1C.eTransfer(acc2S, 10000);
 
         List<String> accounts = AccountFileManager.loadAccounts(); // BufferedReader
         for(String acc : accounts) {
