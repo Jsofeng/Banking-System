@@ -14,4 +14,8 @@ class ChequingAccount extends DataBase {
         balance -= amount;
         System.out.printf("[%s] Chequing Withdrawal: $%.2f%n", accountHolder, amount);
     }
+    @Override
+    void eTransfer(DataBase toAccount, double transferAmount) {
+        
+    }
 }

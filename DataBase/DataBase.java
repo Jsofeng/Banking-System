@@ -11,6 +11,7 @@ public abstract class DataBase {
 
     abstract void deposit(double amount);
     abstract void withdraw(double amount);
+    abstract void eTransfer(DataBase toAccount, double transferAmount);
 
     void showBalance() {
         System.out.printf("[%s] BALANCE: $%.2f%n", accountHolder, balance);

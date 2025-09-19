@@ -14,6 +14,11 @@ class SavingsAccount extends DataBase {
         balance -= amount;
         System.out.printf("[%s] Withdrew $%.2f from Savings Account%n", accountHolder, amount);
     }
+
+    @Override
+    void eTransfer(DataBase toAccount, double transferAmount) {
+        
+    }
 }
 
 
