@@ -40,7 +40,7 @@ public class AccountFileManager {
     public static void logTransaction(DataBase fromAccount, DataBase toAccount, double amount) {
         String dtf = LocalDateTime.now().format(currentDateTime);
         try (FileWriter fw = new FileWriter("accounts.txt", true)) {
-            fw.write("[TRANSFER] "
+            fw.write("[E-TRANSFER] "
                     + "[" + fromAccount.accountNumber + "] "
                     + "sent $" + String.format("%.2f", amount)
                     + " to [" + toAccount.accountNumber + "]"

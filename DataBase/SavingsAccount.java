@@ -21,6 +21,7 @@ class SavingsAccount extends DataBase {
         toAccount.balance += transferAmount;
         System.out.printf("[%s] transferred $%.2f to [%s]%n", this.accountNumber, transferAmount, toAccount.accountNumber);
         System.out.printf("[%s] NEW BALANCE: $%.2f%n[%s] NEW BALANCE $%.2f%n", this.accountNumber, balance, toAccount.accountNumber, toAccount.balance);
+        AccountFileManager.logTransaction(this, toAccount, transferAmount);
     }
 }
 
