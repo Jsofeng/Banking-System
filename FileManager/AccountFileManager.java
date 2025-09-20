@@ -36,6 +36,25 @@ public class AccountFileManager {
             System.out.println("ERROR WHILE SAVING ACCOUNTS" + e.getMessage());
         }
     }
+    
+    public static void logTransaction(DataBase fromAccount, DataBase toAccount, double amount) {
+        String dtf = LocalDateTime.now().format(currentDateTime);
+        try (FileWriter fw = new FileWriter("accounts.txt", true)) {
+            fw.write("[TRANSFER] "
+                    + "[" + fromAccount.accountNumber + "] "
+                    + "sent $" + String.format("%.2f", amount)
+                    + " to [" + toAccount.accountNumber + "]"
+                    + " -----> " + dtf + "\n");
+
+            fw.write("[" + fromAccount.accountNumber + "] NEW BALANCE: $"
+                    + String.format("%.2f", fromAccount.balance) + "\n");
+            fw.write("[" + toAccount.accountNumber + "] NEW BALANCE: $"
+                    + String.format("%.2f", toAccount.balance) + "\n\n");
+
+        } catch (IOException e) {
+            System.out.println("ERROR LOGGING TRANSACTION: " + e.getMessage());
+        }
+    }
 
     public static List<String> loadAccounts() {
         List<String> accounts = new ArrayList<>();
