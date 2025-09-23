@@ -6,7 +6,17 @@
 * This is my first ever project!
 * Though it's simple I was able to receive some insight and learned a lot 
 
-Have Fun racking up your bank account :)
-
 ## **MAJOR UPDATE COMING SOON..** 
 * hint: interative features & real-time data storage that can be viewed 👀 
+
+### _[Functions]_
+1. Check Balance
+2. Create Account
+3. Deposit
+4. Withdraw
+5. Request Loan
+6. Pay Off Loan
+7. Request Credit Card
+8. Credit Card Payment
+
+Have Fun racking up your bank account :)
