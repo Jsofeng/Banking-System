@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 public class AccountFileManager {
     static DateTimeFormatter currentDateTime = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm:ss");
 
+     /**
+     * @param account -> retrieves the account information and writes the info in "accounts.txt" (Meant for saving accounts individually_
+     */
+
     public static void saveAccount(DataBase account) {
 
 
@@ -23,6 +27,10 @@ public class AccountFileManager {
 
     }
 
+    /**
+     * @param accounts -> retrieves multiple account's information and writes the info in "accounts.txt" (Meant for saving multiple accounts at once)
+     */
+
     public static void saveAccounts(List<DataBase> accounts) {
         String dtf = LocalDateTime.now().format(currentDateTime);
         try(FileWriter fw = new FileWriter("accounts.txt", true)) {
@@ -37,6 +45,11 @@ public class AccountFileManager {
         }
     }
     
+     /**
+     * @param fromAccount -> Takes in the account that's e-transferring
+     * @param toAccount -> Takes in the account that is the amount is being transferred to
+     * @param amount -> Amount being transferred
+     */
     public static void logTransaction(DataBase fromAccount, DataBase toAccount, double amount) {
         String dtf = LocalDateTime.now().format(currentDateTime);
         try (FileWriter fw = new FileWriter("accounts.txt", true)) {
@@ -56,6 +69,9 @@ public class AccountFileManager {
         }
     }
 
+    /**
+     * @return reads all data stored in accounts.txt
+     */
     public static List<String> loadAccounts() {
         List<String> accounts = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader("accounts.txt"))) {
