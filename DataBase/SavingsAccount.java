@@ -15,6 +15,13 @@ class SavingsAccount extends DataBase {
         System.out.printf("[%s] Withdrew $%.2f from Savings Account%n", accountHolder, amount);
     }
 
+     /**
+     *
+     * @param toAccount the account I am transferring money to
+     * @param transferAmount the amount I am transferring
+     * balance -= transferAmount subtracts the balance from the account that is transferring (e.g) acc1C.(acc2S,1000) acc1C's balance is deducted by transferAmount and then toAccount receives that balance.
+     */
+    
     @Override
     void eTransfer(DataBase toAccount, double transferAmount) {
         balance -= transferAmount;
