@@ -7,7 +7,8 @@
 * Though it's simple I was able to receive some insight and learned a lot 
 
 ## **MAJOR UPDATE COMING SOON..** 
-* hint: interative features & real-time data storage that can be viewed 👀 
+* hint: interative features & real-time data storage that can be viewed 👀
+* BETA VERSION IN PRODUCTION --> view (https://github.com/Jsofeng/Banking-System/tree/beta) 
 
 ### _[Functions]_
 1. Check Balance
