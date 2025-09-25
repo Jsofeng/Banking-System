@@ -3,12 +3,20 @@ class ChequingAccount extends DataBase {
         super(accountNumber, accountHolder);
     }
 
+    /**
+     * @param amount the amount to deposit
+     * balance += amount adds the amount to the balance
+     */
     @Override
     void deposit(double amount) {
         balance += amount;
         System.out.printf("[%s] Chequing Deposit: $%.2f%n", accountHolder, amount);
     }
 
+    /**
+     * @param amount the amount to withdraw
+     * balance -= amount subtracts the amount from the balance
+     */
     @Override
     void withdraw(double amount) {
         balance -= amount;
