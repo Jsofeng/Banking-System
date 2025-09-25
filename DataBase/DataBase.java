@@ -17,6 +17,10 @@ public abstract class DataBase {
         System.out.printf("[%s] BALANCE: $%.2f%n", accountHolder, balance);
     }
 
+    /**
+     * @return a string representation of the account details
+     * Any class that extends DataBase will inherit this method
+     */
     @Override
     public String toString() {
         return "AccountNumber: " + accountNumber +
