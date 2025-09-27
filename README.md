@@ -6,10 +6,12 @@
 * This is my first ever project!
 * Though it's simple I was able to receive some insight and learned a lot 
 
-## **MAJOR UPDATE COMING SOON..** 
-* hint: interative features & real-time data storage that can be viewed 👀 
+## **MAJOR UPDATE COMING SOON..** 🚀
+* hint: interative features & real-time data storage that can be viewed 👀
+* BETA VERSION IN PRODUCTION --> [view](https://github.com/Jsofeng/Banking-System/tree/beta) 
 
 ### _[Functions]_
+```
 1. Check Balance
 2. Create Account
 3. Deposit
@@ -18,5 +20,5 @@
 6. Pay Off Loan
 7. Request Credit Card
 8. Credit Card Payment
-
-Have Fun racking up your bank account :)
+```
+Have Fun racking up your bank account :) 💵💰
