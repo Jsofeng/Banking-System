@@ -6,7 +6,14 @@
 * This is my first ever project!
 * Though it's simple I was able to receive some insight and learned a lot 
 
-## **MAJOR UPDATE COMING SOON..** 🚀
+## **UPDATE COMING SOON..** 🚀
+```java
+public static double purchase(double balance, double payment) {
+   balance = creditCardPayment(balance, payment);
+
+   return balance; 
+}
+``` 
 * hint: interative features & real-time data storage that can be viewed 👀
 * BETA VERSION IN PRODUCTION --> [view](https://github.com/Jsofeng/Banking-System/tree/beta) 
 
