@@ -10,11 +10,18 @@ class BankingMethods extends BankingAccount
     }
 
 
+    /**
+     * @param balance balance of that specific account
+     */
     static void showBalance(double balance)
     {
         System.out.printf("BALANCE: $%.2f\n", balance);
     }
 
+    /**
+     * prompts user asking "ENTER AMOUNT TO DEPOSIT" and then storing the amount deposited
+     * @return returns the amount beind deposited
+     */
     static double deposit()
     {
         System.out.print("ENTER AMOUNT TO DEPOSIT: $");
@@ -30,6 +37,10 @@ class BankingMethods extends BankingAccount
         }
     }
 
+    /**
+     * @param balance user's balance being withdrawn
+     * returns the amount of balance the user withdrew from their account
+     */
     static double withDraw(double balance)
     {
         System.out.print("ENTER AMOUNT TO WITHDRAW: $");
@@ -50,6 +61,7 @@ class BankingMethods extends BankingAccount
         }
     }
 
+   
     static void requestCreditCard(String name, int age, String ssn)
     {
 
@@ -97,7 +109,10 @@ class BankingMethods extends BankingAccount
 
 
     }
-
+    /**
+     * If user wants a loan it checks their eligibilty 
+     * @param balance amount they want to loan
+     */
     static void loan(double balance)
     {
         if (balance >= 10000)
@@ -132,10 +147,15 @@ class BankingMethods extends BankingAccount
             System.out.println("SUFFICIENT FUNDS: " + (10000.00 - balance) + " MORE TO QUALIFY");
         }
 
-
+   
+    
     }
     private static double remainingLoan = 0;
 
+    /**
+     * Prompts user with how much they want to pay off 
+     * @param balance amount paying 
+     */
     static void payOffLoan(double balance)
     {
         if (remainingLoan == 0)
@@ -196,6 +216,12 @@ class BankingMethods extends BankingAccount
             System.out.println("PAYMENT SKIPPED, INTEREST APPLIED: 2.5%");
         }
     }
+
+    /**
+     * Creates a new account for the user 
+     * @param accountNumber
+     * @param accountHolder
+     */
     static void createAccount(String accountNumber, String accountHolder)
     {
         System.out.println("CREATE NEW ACCOUNT");
@@ -239,6 +265,10 @@ class BankingMethods extends BankingAccount
 
     private static double remainingDue = 0;
 
+    /**
+     * generates a new amount everytime the user has paid of their creditCardPayment
+     * @param balance
+     */
     static void creditCardPayment(double balance)
     {
 
