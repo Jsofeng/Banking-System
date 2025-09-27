@@ -14,7 +14,6 @@ public static double purchase(double balance, double payment) {
    return balance; 
 }
 ``` 
-* hint: interative features & real-time data storage that can be viewed 👀
 * BETA VERSION IN PRODUCTION --> [view](https://github.com/Jsofeng/Banking-System/tree/beta) 
 
 ### _[Functions]_
