@@ -56,6 +56,14 @@ public class BankingSystem {
                     }
                     break;
                 }
+                
+                case 7: {
+                    System.out.println("AMOUNT SPEND: $");
+                    double amount = scan.nextLine();
+                    System.out.println("[%s]'s Credit Card has been charged [%.2lf]", currentAccount, purchase(amount));
+                    // add new AccountFileManager for creditCardPayment
+                }
+
                 case 8: {
                     System.out.println("CREATE ACCOUNT");
                     System.out.print("Enter Account Number: ");

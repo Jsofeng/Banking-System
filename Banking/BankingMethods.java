@@ -313,9 +313,8 @@ class BankingMethods extends BankingAccount
 
     }
 
-    static double purchase(double charged, double payment) {
+    static void purchase(double charged) {
             charged = creditCardPayment(payment);
-            return charged;
     }
 
 }
