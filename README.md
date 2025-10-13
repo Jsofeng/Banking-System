@@ -1,4 +1,3 @@
-=======
 # American Express Banking System
 
 <img width="1000" height="500" alt="image" src="https://github.com/user-attachments/assets/cc87b3c2-f3fb-4a55-9500-157b47b59c66" />
