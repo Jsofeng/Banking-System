@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-TESTING GIT
-=======
 # American Express Banking System
 
 <img width="1000" height="500" alt="image" src="https://github.com/user-attachments/assets/cc87b3c2-f3fb-4a55-9500-157b47b59c66" />
@@ -31,4 +28,4 @@ public static double purchase(double balance, double payment) {
 8. Credit Card Payment
 ```
 Have Fun racking up your bank account :) 💵💰
->>>>>>> a0c73bd44482e7060c8912db09bde0210569a091
+
