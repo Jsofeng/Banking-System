@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-TESTING GIT
 =======
 # American Express Banking System
 
@@ -31,4 +29,3 @@ public static double purchase(double balance, double payment) {
 8. Credit Card Payment
 ```
 Have Fun racking up your bank account :) 💵💰
->>>>>>> a0c73bd44482e7060c8912db09bde0210569a091
