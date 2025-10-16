@@ -34,6 +34,7 @@ public class DBTestcases {
         AccountFileManager.saveAccounts(addAccounts);
 
         acc1C.eTransfer(acc2S, 10000);
+	acc2C.eTransfer(acc1S, 10000);
 
         List<String> accounts = AccountFileManager.loadAccounts(); // BufferedReader
         for(String acc : accounts) {
