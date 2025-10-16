@@ -1,5 +1,3 @@
-package com.amigoscode;
-
 import jakarta.persistence.*;
 
 import java.util.Objects;

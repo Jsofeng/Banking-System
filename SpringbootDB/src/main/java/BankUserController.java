@@ -3,7 +3,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/bank_user")
+@RequestMapping("api/v1/banking-user")
 public class BankUserInfoController {
 
     private final BankUserInfoService BankUserInfoService;
@@ -13,12 +13,12 @@ public class BankUserInfoController {
     }
 
     @GetMapping
-    public List<BankUserInfo> getEngineers() {
+    public List<BankUserInfo> BankingUser() {
         return BankUserInfoService.getAllBankUserInfos();
     }
 
     @GetMapping("{id}")
-    public BankUserInfo getEngineerById(
+    public BankUserInfo getBankUserInfo(
             @PathVariable Integer id
     ) {
         return BankUserInfoService.getBankUserInfoById(id);
