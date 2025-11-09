@@ -16,11 +16,11 @@ public class BankUserInfo{
     public BankUserInfo() {
     }
 
-    public BankUserInfo(Integer id,
-                            String name,
-                            String techStack, String learningPathRecommendation) {
+    public BankUserInfo(Integer id, String name, Integer debitCardNumber, Integer balance, String techStack, String learningPathRecommendation) {
         this.id = id;
         this.name = name;
+	this.debitCardNumber = debitCardNumber;
+	this.balance = balance;
         this.techStack = techStack;
         this.learningPathRecommendation = learningPathRecommendation;
     }
@@ -37,10 +37,23 @@ public class BankUserInfo{
         return name;
     }
 
+    public String getDebitCardNumber() {
+
+	return debitCardNumber;
+    }
+
+    public void setDebitCardNumber(String debitCardNumber) {
+	this.debitCardNumber = debitCardNumber;
+    }
     public void setName(String name) {
         this.name = name;
     }
 
+
+    public Integer getBalance() {
+	return balance;
+
+    }
     public String getTechStack() {
         return techStack;
     }
