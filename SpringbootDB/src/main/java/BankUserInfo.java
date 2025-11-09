@@ -70,6 +70,15 @@ public class BankUserInfo{
         this.learningPathRecommendation = learningPathRecommendation;
     }
 
+
+    public String accountDetails() {
+
+    return "Account Number: " + this.debitCardNumber
+                + "\nAccount Holder: " + this.name
+                + "\nBalance: $" + String.format("%.2f", (double) this.balance);
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
