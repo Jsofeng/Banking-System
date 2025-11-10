@@ -50,7 +50,7 @@ public class BankUserInfo{
     }
 
 
-    public Integer getBalance() {
+    public double getBalance() {
 	return balance;
 
     }
