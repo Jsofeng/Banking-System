@@ -34,5 +34,24 @@ public class BankingUserController
 	return sb.toString();
 
     }
+
+   @GetMapping(value = "/save", produces = "text/plain")
+    public String fileReading() {
+        ArrayList<BankingUser> accounts = new ArrayList<>();
+        accounts.add(new BankingUser("5152006", "Kang Haerin", 15, 92013201));
+        accounts.add(new BankingUser("08262005", "Pharita", 26, 2925232));
+
+        FileManager.saveAccounts("bb.txt", accounts);
+        StringBuilder sb = new StringBuilder();
+        sb.append("ACCOUNTS SAVED: \n\n");
+        for(BankingUser u : accounts) {
+            sb.append(u.accountDetails()).append("\n\n");
+        }
+        return sb.toString();
+    }
+
+
+
+
 }
 
