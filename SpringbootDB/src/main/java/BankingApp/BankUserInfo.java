@@ -1,93 +1,98 @@
-import jakarta.persistence.*;
+package com.example.springbootdb.BankingApp;
 
 import java.util.Objects;
+import java.util.Scanner;
 
-@Entity
-public class BankUserInfo{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class BankingUser {
+
+    static Scanner scan = new Scanner(System.in);
+    // highlight and + alt insert to automake constructors getters and setters
     private Integer id;
     private String name;
-    private String techStack;
-    @Column(columnDefinition = "TEXT")
-    private String learningPathRecommendation;
+    private String debitCardNumber;
+    private Integer balance;
 
-    public BankUserInfo() {
-    }
-
-    public BankUserInfo(Integer id, String name, Integer debitCardNumber, Integer balance, String techStack, String learningPathRecommendation) {
-        this.id = id;
+    public BankingUser(String debitCardNumber, String name, Integer id, Integer balance)
+    {
+        this.debitCardNumber = debitCardNumber;
         this.name = name;
-	this.debitCardNumber = debitCardNumber;
-	this.balance = balance;
-        this.techStack = techStack;
-        this.learningPathRecommendation = learningPathRecommendation;
+        this.id = id;
+        this.balance = balance;
     }
 
-    public Integer getId() {
+    public Integer getId()
+    {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getDebitCardNumber() {
-
-	return debitCardNumber;
+    public double getBalance() {
+        return balance;
+    }
+    public String getDebitCardNumber()
+    {
+        return debitCardNumber;
     }
 
-    public void setDebitCardNumber(String debitCardNumber) {
-	this.debitCardNumber = debitCardNumber;
+    public void setId(Integer id)
+    {
+        this.id = id;
     }
-    public void setName(String name) {
+
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-
-    public double getBalance() {
-	return balance;
-
+    public void setDebitCardNumber(String debitCardNumber)
+    {
+        this.debitCardNumber = debitCardNumber;
     }
-    public String getTechStack() {
-        return techStack;
-    }
-
-    public void setTechStack(String techStack) {
-        this.techStack = techStack;
-    }
-
-    public String getLearningPathRecommendation() {
-        return learningPathRecommendation;
-    }
-
-    public void setLearningPathRecommendation(String learningPathRecommendation) {
-        this.learningPathRecommendation = learningPathRecommendation;
-    }
-
 
     public String accountDetails() {
-
-    return "Account Number: " + this.debitCardNumber
+        return "Account Number: " + this.debitCardNumber
                 + "\nAccount Holder: " + this.name
                 + "\nBalance: $" + String.format("%.2f", (double) this.balance);
-
     }
 
+    static double withDraw(double balance)
+    {
+        System.out.print("ENTER AMOUNT TO WITHDRAW: $");
+        double amount = scan.nextDouble();
+        if (amount > balance)
+        {
+            System.out.println("INSUFFICIENT FUNDS, TRY AGAIN");
+            return withDraw(balance);
+        }
+        else if (amount < 0)
+        {
+            System.out.println("INVALID AMOUNT, TRY AGAIN");
+            return withDraw(balance);
+        }
+        else
+        {
+            return amount;
+        }
+    }
+
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (o == null || getClass() != o.getClass()) return false;
-        BankUserInfothat = (BankUserInfo) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(techStack, that.techStack) && Objects.equals(learningPathRecommendation, that.learningPathRecommendation);
+        BankingUser that = (BankingUser) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
+                Objects.equals(debitCardNumber, that.debitCardNumber);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, techStack, learningPathRecommendation);
+    public int hashCode()
+    {
+        return Objects.hash(id, name, debitCardNumber);
     }
 }
