@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/banking-users")
 public class BankingUserController {
     @GetMapping
-    public List<BankingUser> getEngineers() {
+    public List<BankingUser> getBankingUsers() {
         return List.of(new BankingUser("446916010129332", "Jonathan", 27, 10000),
                 new BankingUser("298318321932132", "Joji", 67, 200000),
                 new BankingUser("8231939123", "Leclerc", 16, 500000),
