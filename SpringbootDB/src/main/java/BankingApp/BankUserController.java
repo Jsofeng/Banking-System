@@ -57,4 +57,38 @@ public class BankingUserController {
         return sb.toString();
     }
 
+     @GetMapping(value = "/readAcc", produces = "text/plain")
+    public String readAccType() {
+        String pathName = "AccountsDB.txt";
+        StringBuilder sb = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error While Reading File" + e.getMessage());
+        }
+
+        return sb.toString();
+
+    }
+
+    @GetMapping(value = "transactions", produces = "text/plain")
+    public String readTransactions() {
+        String pathName = "Transactions.txt";
+        StringBuilder sb = new StringBuilder();
+
+        try(BufferedReader br = new BufferedReader(new FileReader(pathName))) {
+            String line;
+            while((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        }catch (IOException e) {
+            System.out.println("Error While Reading File" + e.getMessage());
+        }
+        return sb.toString();
+    }
+
 }
