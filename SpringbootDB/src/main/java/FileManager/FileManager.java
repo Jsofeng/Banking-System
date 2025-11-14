@@ -56,5 +56,21 @@ public class FileManager {
             System.out.println("Error writing to file: " + e.getMessage());
         }
     }
+
+
+    public static void readFiles(String filePath) {
+        try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String str;
+              while((str = br.readLine()) != null) {
+                  System.out.println(str);
+              }
+        }catch (Exception e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
 }
+
+
+}
+
 
