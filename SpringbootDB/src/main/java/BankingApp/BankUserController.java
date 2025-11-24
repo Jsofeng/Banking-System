@@ -91,4 +91,19 @@ public class BankingUserController {
         return sb.toString();
     }
 
+    @GetMapping(value = "ACCDB", produces = "text/plain")
+    public String accountDataBase() {
+        String file = "AccountsDB.txt";
+        StringBuilder sb = new StringBuilder();
+        sb.append("ACCOUNTS DATABASE\n");
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while((line = br.readLine()) != null ) {
+                sb.append("\n").append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error While Reading File" + e.getMessage());
+        }
+        return sb.toString();
+    }
 }
