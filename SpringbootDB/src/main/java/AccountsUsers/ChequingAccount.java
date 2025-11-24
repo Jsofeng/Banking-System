@@ -4,7 +4,7 @@ import FileManager.FileManager;
 
 class ChequingAccount extends AccountType {
     ChequingAccount(String accountNumber, String accountHolder) {
-        super(accountNumber, accountHolder, 0); //
+        super(accountNumber, accountHolder, balance); 
     }
 
     @Override
