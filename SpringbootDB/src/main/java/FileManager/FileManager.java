@@ -70,7 +70,25 @@ public class FileManager {
     }
 }
 
+    public static void logDeposit(AccountType accountType, double amount) {
+        try(FileWriter fw = new FileWriter("AccountDep.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + accountType.accountNumber + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + accountType.accountNumber + "] NEW BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
 
+    public static void logWithdraw(AccountType accountType, double amount) {
+        try(FileWriter fw = new FileWriter("AccountWithDraw.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + accountType.accountNumber + "] Withdrew --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + accountType.accountNumber + "] NEW BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
 }
 
 
