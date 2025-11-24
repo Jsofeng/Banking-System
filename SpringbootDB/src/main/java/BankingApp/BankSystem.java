@@ -36,8 +36,9 @@ public class BankingSystem {
             switch (choice) {
                 case 1: {
                     if (currentAccount != null) {
-                        currentAccount.getBalance();
-                    } else {
+                        double balance = currentAccount.getBalance();
+                	 System.out.println("[" + currentAccount.accountHolder + "] Balance: $" + String.format("%.2f", balance))
+		} else {
                         System.out.println("NO ACCOUNT FOUND. CREATE ONE FIRST!");
                     }
                     break;
