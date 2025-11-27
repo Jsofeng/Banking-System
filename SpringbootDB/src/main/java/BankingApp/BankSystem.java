@@ -54,9 +54,11 @@ public class BankingSystem {
                     }
                     break;
                 }
+
                 case 3: {
                     if (currentAccount != null) {
-                        double amount = BankingUser.withDraw(currentAccount.getBalance());
+                        System.out.print("Enter Amount To Withdraw: $");
+                        double amount = scan.nextDouble();
                         currentAccount.withdraw(amount);
                         FileManager.logWithdraw(currentAccount, amount);
                     } else {
@@ -64,7 +66,6 @@ public class BankingSystem {
                     }
                     break;
                 }
-
 //                case 7: {
 //                    System.out.println("AMOUNT SPEND: $");
 //                    double amount = scan.nextDouble();
