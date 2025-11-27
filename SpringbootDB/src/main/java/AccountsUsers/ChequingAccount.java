@@ -29,4 +29,38 @@ class ChequingAccount extends AccountType {
 
         FileManager.logTransaction(this, toAccount, transferAmount);
     }
+
+    @Override
+    pubic double getBalance() {
+	return this.balance;
+}
+
+ public void loan(double balance) {
+        if (balance >= 10000) {
+            System.out.println("YOU ARE ELIGIBLE FOR A LOAN");
+            System.out.print("PLEASE ENTER AMOUNT TO LOAN: $ ");
+            Scanner scan = new Scanner(System.in);
+            double loanAmount = scan.nextDouble();
+
+            while (loanAmount >= balance) {
+                System.out.println("LOAN AMOUNT EXCEEDS BALANCE, PLEASE TRY AGAIN");
+                loanAmount = scan.nextDouble();
+            }
+
+            if (loanAmount < balance) {
+                System.out.println("LOAN PROCESSING...");
+                System.out.printf("LOAN APPROVED! YOU HAVE BEEN LOANED: $" + "%.2f\n", loanAmount);
+                System.out.println();
+                System.out.println("PLEASE READ THE TERMS AND CONDITIONS BELOW");
+                System.out.println("PLEASE NOTE: LOAN MUST BE REPAID WITHIN 12 MONTHS WITH A 5% INTEREST RATE");
+                System.out.println();
+                System.out.printf("BALANCE: $: " + "%.2f\n", balance);
+                System.out.printf("LOAN AMOUNT: $" + "%.2f\n", loanAmount);
+
+            }
+        } else {
+            System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN");
+            System.out.println("SUFFICIENT FUNDS: " + (10000.00 - balance) + " MORE TO QUALIFY");
+        }
+    }
 }
