@@ -66,6 +66,16 @@ public class BankingSystem {
                     }
                     break;
                 }
+
+		case 4: {
+                    if (currentAccount != null && currentAccount.getBalance() >= 10000) {
+                        ChequingAccount.loan(currentAccount.getBalance());
+                    } else {
+                        System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN RIGHT NOW");
+                    }
+                    break;
+                }
+
 //                case 7: {
 //                    System.out.println("AMOUNT SPEND: $");
 //                    double amount = scan.nextDouble();
