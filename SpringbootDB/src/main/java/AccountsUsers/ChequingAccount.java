@@ -35,8 +35,11 @@ class ChequingAccount extends AccountType {
 	return this.balance;
 }
 
- public void loan(double balance) {
-        if (balance >= 10000) {
+ public double loan(double balance) {
+
+
+	double loanAmount = 0;
+	if (balance >= 10000) {
             System.out.println("YOU ARE ELIGIBLE FOR A LOAN");
             System.out.print("PLEASE ENTER AMOUNT TO LOAN: $ ");
             Scanner scan = new Scanner(System.in);
@@ -62,5 +65,16 @@ class ChequingAccount extends AccountType {
             System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN");
             System.out.println("SUFFICIENT FUNDS: " + (10000.00 - balance) + " MORE TO QUALIFY");
         }
+    	return loanAmount;
+    }
+
+    private boolean hasLoan = false;
+
+    public boolean hasLoan() {
+        return hasLoan;
+    }
+
+    public void setHasLoan(boolean hasLoan) {
+        this.hasLoan = hasLoan;
     }
 }
