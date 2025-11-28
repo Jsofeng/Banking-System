@@ -67,4 +67,14 @@ class ChequingAccount extends AccountType {
         }
     	return loanAmount;
     }
+
+    private boolean hasLoan = false;
+
+    public boolean hasLoan() {
+        return hasLoan;
+    }
+
+    public void setHasLoan(boolean hasLoan) {
+        this.hasLoan = hasLoan;
+    }
 }

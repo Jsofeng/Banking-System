@@ -68,14 +68,21 @@ public class BankingSystem {
                 }
 
 		case 4: {
-                    if (currentAccount != null && currentAccount.getBalance() >= 10000) {
-                        double loaned = currentAccount.loan(currentAccount.getBalance());
-                        FileManager.logLoans(currentAccount, loaned);
-		} else {
-                        System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN RIGHT NOW");
+                     if (currentAccount == null) {
+                        System.out.println("NO ACCOUNT FOUND");
+                        break;
+                    }
+                    if(!currentAccount.hasLoan()) {
+
+                            double loaned = currentAccount.loan(currentAccount.getBalance());
+                            FileManager.logLoans(currentAccount, loaned);
+                            currentAccount.setHasLoan(true);
+
+                    } else {
+                        System.out.println("YOU CANNOT TAKE OUT ANOTHER LOAN");
                     }
                     break;
-                }
+		}
 
 //                case 7: {
 //                    System.out.println("AMOUNT SPEND: $");
