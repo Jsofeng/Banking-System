@@ -69,8 +69,9 @@ public class BankingSystem {
 
 		case 4: {
                     if (currentAccount != null && currentAccount.getBalance() >= 10000) {
-                        currentAccount.loan(currentAccount.getBalance());
-                    } else {
+                        double loaned = currentAccount.loan(currentAccount.getBalance());
+                        FileManager.logLoans(currentAccount, loaned);
+		} else {
                         System.out.println("YOU ARE NOT ELIGIBLE FOR A LOAN RIGHT NOW");
                     }
                     break;
