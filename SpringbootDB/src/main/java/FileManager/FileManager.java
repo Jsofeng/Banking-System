@@ -89,6 +89,16 @@ public class FileManager {
             System.out.println("Error writing to file." + e.getMessage());
         }
     }
+
+
+    public static void logLoans(AccountType accountType, double loan) {
+        boolean loaned = false;
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("Loans.txt", true))) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            bw.write("[" + accountType.accountNumber + "] Loaned --> $" + String.format("%.2f", loan) + " At [" + currentTime + "]\n");
+            loaned = true;
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
 }
-
-
