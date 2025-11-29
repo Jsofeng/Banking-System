@@ -12,13 +12,26 @@ public class FileManager {
 
     static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss");
 
-    public static void saveAccount(String filePath, BankingUser bankingUser) {
+    public static void saveBankingUser(String filePath, BankingUser bankingUser) {
         try (FileWriter fw = new FileWriter(filePath, true)) {
             String currentTime = LocalDateTime.now().format(dtf);
             fw.write("[" + bankingUser.getDebitCardNumber() + "] " + ", " +
                     "[" + bankingUser.getName() +"] " + ", " +
-                    "[BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "] -----> " + currentTime + "\n");
+                    "[BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "] -----> " + "[" + currentTime + "]" + "\n");
             System.out.println("[" + bankingUser.getDebitCardNumber() + "]" + " SAVED TO SYSTEM ");
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
+    public static void saveAccountType(String filePath, AccountType accountType) {
+        try (FileWriter fw = new FileWriter(filePath, true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + accountType.accountNumber + "] " + ", " +
+                    "[" + accountType.accountHolder +"] " + ", " +
+                    "[BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "] -----> " + "[" + currentTime + "]" + "\n");
+            System.out.println("[" + accountType.accountNumber + "]" + " SAVED TO SYSTEM ");
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
@@ -30,9 +43,25 @@ public class FileManager {
             for(BankingUser u : bankingUser) {
                 fw.write("[" + u.getDebitCardNumber() + "] " + ", " +
                         "[" + u.getName() +"] " + ", " +
-                        "[BALANCE: $" + String.format("%.2f", u.getBalance()) + "] -----> " + currentTime + "\n");
+                        "[BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "] -----> " + "[" + currentTime + "]" + "\n");
+
             }
             System.out.println("ACCOUNTS SAVED TO SYSTEM " + bankingUser + "\t");
+        }catch (Exception e){
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
+    public static void saveAccountsType(String filePath, List<AccountType> accountType) {
+        try (FileWriter fw = new FileWriter(filePath,true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            for(AccountType a : accountType) {
+                fw.write("[" + a.accountNumber + "] " + ", " +
+                        "[" + a.accountHolder +"] " + ", " +
+                        "[BALANCE: $" + String.format("%.2f", a.getBalance()) + "] -----> " + "[" + currentTime + "]" + "\n");
+            }
+            System.out.println("ACCOUNTS SAVED TO SYSTEM " + accountType + "\t");
         }catch (Exception e){
             System.err.println("Error writing to file: " + e.getMessage());
         }
@@ -91,12 +120,11 @@ public class FileManager {
     }
 
 
+
     public static void logLoans(AccountType accountType, double loan) {
-        boolean loaned = false;
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("Loans.txt", true))) {
             String currentTime = LocalDateTime.now().format(dtf);
-            bw.write("[" + accountType.accountNumber + "] Loaned --> $" + String.format("%.2f", loan) + " At [" + currentTime + "]\n");
-            loaned = true;
+            bw.write("[" + accountType.accountNumber + "]" + "[" + accountType.accountHolder + "]" + " Loaned --> $" + String.format("%.2f", loan) + " At [" + currentTime + "]\n");
         } catch (IOException e) {
             System.out.println("Error writing to file." + e.getMessage());
         }
