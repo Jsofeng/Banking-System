@@ -126,4 +126,22 @@ public class BankingUserController {
         return sb.toString();
     }
 
+    @GetMapping(value = "eTransfer", produces = "text/plain")
+    public String transferDataBase() {
+        String file = "e-transfer.txt";
+        StringBuilder sb = new StringBuilder();
+
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error While Reading File: " + e.getMessage());
+        }
+
+        return sb.toString();
+    }
+
+
 }
