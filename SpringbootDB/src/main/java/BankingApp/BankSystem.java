@@ -84,6 +84,24 @@ public class BankingSystem {
                     break;
 		}
 
+		case 5: {
+                    if (currentAccount == null) {
+                        System.out.println("NO ACCOUNT FOUND");
+                        break;
+                    }
+
+                    System.out.println("Enter Account # To Transfer To: ");
+                    String accountNumber = scan.next();
+                    System.out.println("Enter Account Holder Name: ");
+                    String accountHolderName = scan.next();
+                    System.out.println("Enter Amount To Transfer To: ");
+                    double amount  = scan.nextDouble();
+                    AccountType toAccount = new ChequingAccount(accountNumber, accountHolderName, amount);
+
+                    currentAccount.eTransfer(currentAccount, toAccount, amount);
+                    break;
+                }
+
 //                case 7: {
 //                    System.out.println("AMOUNT SPEND: $");
 //                    double amount = scan.nextDouble();

@@ -68,6 +68,17 @@ class ChequingAccount extends AccountType {
     	return loanAmount;
     }
 
+    public void eTransfer(AccountType fromAccount, AccountType toAccount, double transferAmount) {
+        toAccount.balance += transferAmount;
+        fromAccount.balance -= transferAmount;
+        System.out.printf("[%s] transferred $%.2f to [%s]%n", this.accountNumber, transferAmount, toAccount.accountNumber);
+        System.out.printf("[%s] NEW BALANCE: $%.2f%n[%s] NEW BALANCE $%.2f%n", this.accountNumber, balance, toAccount.accountNumber, toAccount.balance);
+
+        FileManager.eTransaction(this, toAccount, transferAmount);
+    }
+
+
+
     private boolean hasLoan = false;
 
     public boolean hasLoan() {
