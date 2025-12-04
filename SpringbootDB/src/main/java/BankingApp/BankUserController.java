@@ -142,6 +142,44 @@ public class BankingUserController {
 
         return sb.toString();
     }
+	private double parseBalance(String balanceString) {
+        	String cleaned = balanceString.replace("Balanced: $", "").trim();
+       	        return Double.parseDouble(cleaned);
+
+	{
+
+ @GetMapping("/search") // /search?accountNumber=219321312&fileName=AccountsDB.txt
+    public AccountType searchUser(@RequestParam String accountNumber, @RequestParam String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                if(line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(" , "); // index 0 will have [ [812939821231] ] followed by index 1 [ [Max Verstappen] ] ...etc [BALANCE: $20000.00] -----> [30/11/2025  22:39:06]
+
+
+                if(parts.length < 3) continue;
+                String accNum = parts[0].replace("[", "").replace("]", "").trim();
+                String name = parts[1].replace("[", "").replace("]", "").trim();
+                String balStr = parts[2].split("----->")[0] // split into 2 indexes and only taking the first half [0] and removing the second
+                        .replace("[BALANCE:", "")
+                        .replace("]", "")
+                        .replace("$", "")
+                        .trim();
+
+                double balance =  parseBalance(balStr);
+
+                if(accNum.equals(accountNumber)) {
+                    return new ChequingAccount(accNum, name, balance);
+                }
+
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file" + e.getMessage());
+        }
+        return null;
+    }
 
 
 }
