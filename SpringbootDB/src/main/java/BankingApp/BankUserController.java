@@ -142,6 +142,10 @@ public class BankingUserController {
 
         return sb.toString();
     }
+	private double parseBalance(String balanceString) {
+        	String cleaned = balanceString.replace("Balanced: $", "").trim();
+       	        return Double.parseDouble(cleaned);
+
 
 
 }
