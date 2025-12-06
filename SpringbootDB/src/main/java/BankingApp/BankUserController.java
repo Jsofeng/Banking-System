@@ -181,5 +181,34 @@ public class BankingUserController {
         return null;
     }
 
+	@GetMapping("/sortByBalance")
+	public List<AccountType> sortBalance(@RequestParam String fileName) {
+        	ArrayList<AccountType> accounts  = new ArrayList<>();
+       		try(BufferedReader br = new BufferedReader(new FileReader("AccountsDB.txt"))) {
+           	 String line;
+           	 while ((line = br.readLine()) != null) {
+                    String[] parts = line.split(" , ");
+                    if(parts.length < 3) continue;
+                    String accNum = parts[0].replace("[", "").replace("]", "").trim();
+                    String name = parts[1].replace("[", "").replace("]", "").trim();
+                    String balStr = parts[2]
+                        .split("----->")[0]
+                        .replace("[BALANCE:", "")
+                        .replace("]", "")
+                        .replace("$", "")
+                        .trim();
+
+                    double balance = parseBalance(balStr);
+                    accounts.add(new ChequingAccount(accNum, name, balance));
+            }
+    
+        } catch (IOException e) {
+            System.out.println("Error reading file" + e.getMessage());
+        }
+
+        accounts.sort((x, y) -> Double.compare(y.getBalance(), x.getBalance()));
+        return accounts;
+}
+
 
 }
