@@ -205,7 +205,9 @@ public class BankingUserController {
         } catch (IOException e) {
             System.out.println("Error reading file" + e.getMessage());
         }
-
+	
+	// (Senario) Hey robot when you pick up any two accounts, use THIS rule to decide which goes first!"
+	//x,y are just the account names in this case so ignore them and focus on Double.compare (compares both and then which ever is bigger then sort it big->small)
         accounts.sort((x, y) -> Double.compare(y.getBalance(), x.getBalance()));
         return accounts;
 }
