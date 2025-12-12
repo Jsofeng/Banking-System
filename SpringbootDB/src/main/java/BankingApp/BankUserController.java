@@ -79,6 +79,35 @@ public class BankingUserController {
         return null;
     }
 
+ @GetMapping(value = "/bankTotal", produces = "text/plain")
+    public String bankTotal(@RequestParam String fileName) {
+        StringBuilder sb = new StringBuilder();
+        double balance = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
+                String[] parts = line.split(" , ");
+
+                if (parts.length > 0) {
+                    String balStr = parts[2].split("----->")[0]
+                            .replace("[BALANCE:", "")
+                            .replace("]", "")
+                            .replace("$", "")
+                            .trim();
+                    balance += parseBalance(balStr);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error While Reading File" + e.getMessage());
+        }
+
+        sb.append("\nBANK NETWORTH: $ ").append(String.format("%.2f", balance)).append("\n");
+        return sb.toString();
+
+    }
+
     @GetMapping("/sortByBalance")
     public List<AccountType> sortBalance(@RequestParam String fileName) {
         ArrayList<AccountType> accounts = new ArrayList<>();
