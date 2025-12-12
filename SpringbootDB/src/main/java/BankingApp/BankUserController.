@@ -213,4 +213,40 @@ public class BankingUserController {
 }
 
 	//generatefakebankinguser
+
+public String doesUserExist(@RequestParam String accountNumbers, @RequestParam String fileName) {
+    HashSet<String> accounts = new HashSet<>();
+    String[] numbersToCheck = accountNumbers.split(", ");
+
+    try(BufferedReader br = new BufferedReader(new FileReader(fileName))) { // stores every single accnum to the hashset accounts
+        String line;
+
+        while((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if(parts.length > 0) {
+                String accNum = parts[0].replace("[", "").replace("]", "").trim();
+                accounts.add(accNum);
+            }
+        }
+
+    } catch (IOException e) {
+        System.out.println("Error reading file" + e.getMessage());
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for(String number : numbersToCheck) { // goes through the numbersToCheck array which has all the requested accountnumbers to find if exist
+        String trimmed = number.trim();
+        if(accounts.contains(trimmed)) { 
+            sb.append(trimmed).append(": FOUND\n");
+        } else {
+            sb.append(trimmed).append(": NOT FOUND\n");
+        }
+    }
+    return sb.toString();
+
+}
+
+
+
+
 }
