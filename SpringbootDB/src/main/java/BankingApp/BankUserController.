@@ -214,7 +214,7 @@ public class BankingUserController {
 
 	//generatefakebankinguser
 
-@GetMapping("/exists")
+@GetMapping(value = "/exist", produces = "text/plain")
 public String doesUserExist(@RequestParam String accountNumbers, @RequestParam String fileName) {
     HashSet<String> accounts = new HashSet<>();
     String[] numbersToCheck = accountNumbers.split(", ");
