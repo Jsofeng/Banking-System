@@ -1,11 +1,9 @@
 package com.example.bankingsystemsb;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileReader;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +24,35 @@ public class BankingUserController {
     private double parseBalance(String balanceString) {
         String cleaned = balanceString.replace("Balanced: $", "").trim();
         return Double.parseDouble(cleaned);
+
+    }
+    @GetMapping("/generateFake")
+    public List<BankingUser> generateFake() {
+        List<BankingUser> bankingUsers = new ArrayList<>();
+
+        String[] names = {
+                "Max Verstappen", "Liam Lawson", "Lando Norris", "Oscar Piastri",
+                "George Russell", "Andrea Kimi Antonelli", "Fernando Alonso",
+                "Lance Stroll", "Pierre Gasly", "Jack Doohan", "Esteban Ocon",
+                "Oliver Bearman", "Yuki Tsunoda", "Isack Hadjar", "Alexander Albon",
+                "Carlos Sainz", "Nico Hulkenberg", "Gabriel Bortoleto",
+                "Charles Leclerc", "Lewis Hamilton"
+        };
+
+        int count = (int) (Math.random() * 20) + 1;
+        for (int i = 0; i < count; i++) {
+
+            Integer id = (int)  (Math.random() * 1000);
+            String name = names[(int) (Math.random() * names.length)];
+            String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L));
+            Integer bal = (int) (Math.random() * 1_000_000);
+
+            bankingUsers.add(new BankingUser(acc, name, id, bal));
+        }
+
+        return bankingUsers;
+
+       
 
     }
 
@@ -63,7 +90,8 @@ public class BankingUserController {
         return null;
     }
 
- @GetMapping(value = "/bankTotal", produces = "text/plain")
+
+    @GetMapping(value = "/bankTotal", produces = "text/plain")
     public String bankTotal(@RequestParam String fileName) {
         StringBuilder sb = new StringBuilder();
         double balance = 0;
@@ -188,5 +216,5 @@ public class BankingUserController {
         return sb.toString();
 
     }
-}
 
+}
