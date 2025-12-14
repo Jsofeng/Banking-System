@@ -26,7 +26,7 @@ public class BankingUserController {
         return Double.parseDouble(cleaned);
 
     }
-    @GetMapping("/generateFake")
+    @GetMapping("/generateFake") // generates a random # of fake f1 Users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
 
@@ -44,13 +44,13 @@ public class BankingUserController {
 
             Integer id = (int)  (Math.random() * 1000);
             String name = names[(int) (Math.random() * names.length)];
-            String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L));
+            String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L)); // random 13 digit acc number
             Integer bal = (int) (Math.random() * 1_000_000);
 
             bankingUsers.add(new BankingUser(acc, name, id, bal));
         }
 
-        return bankingUsers;
+        return bankingUsers; // auto converst to JSON format
 
        
 
