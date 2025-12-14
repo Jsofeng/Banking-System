@@ -1,4 +1,4 @@
-package com.example.springbootdb.BankingApp;
+package com.example.bankingsystemsb;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -7,50 +7,44 @@ import java.util.Scanner;
 public class BankingUser {
 
     static Scanner scan = new Scanner(System.in);
-    // highlight and + alt insert to automake constructors getters and setters
+   
     private Integer id;
     private String name;
     private String debitCardNumber;
     private Integer balance;
 
-    public BankingUser(String debitCardNumber, String name, Integer id, Integer balance)
-    {
+    public BankingUser(String debitCardNumber, String name, Integer id, Integer balance) {
         this.debitCardNumber = debitCardNumber;
         this.name = name;
         this.id = id;
         this.balance = balance;
     }
 
-    public Integer getId()
-    {
+    public Integer getId() {
         return id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     public double getBalance() {
         return balance;
     }
-    public String getDebitCardNumber()
-    {
+
+    public String getDebitCardNumber() {
         return debitCardNumber;
     }
 
-    public void setId(Integer id)
-    {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setDebitCardNumber(String debitCardNumber)
-    {
+    public void setDebitCardNumber(String debitCardNumber) {
         this.debitCardNumber = debitCardNumber;
     }
 
@@ -60,30 +54,30 @@ public class BankingUser {
                 + "\nBalance: $" + String.format("%.2f", (double) this.balance);
     }
 
-    static double withDraw(double balance)
-    {
+    static double withDraw(double balance) {
         System.out.print("ENTER AMOUNT TO WITHDRAW: $");
         double amount = scan.nextDouble();
-        if (amount > balance)
-        {
+        if (amount > balance) {
             System.out.println("INSUFFICIENT FUNDS, TRY AGAIN");
             return withDraw(balance);
-        }
-        else if (amount < 0)
-        {
+        } else if (amount < 0) {
             System.out.println("INVALID AMOUNT, TRY AGAIN");
             return withDraw(balance);
-        }
-        else
-        {
+        } else {
             return amount;
         }
     }
 
+    @Override
+    public String toString() {
+        return "Account: " + debitCardNumber +
+                ", Name: " + name +
+                ", ID: " + id +
+                ", Balance: $" + balance;
+    }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BankingUser that = (BankingUser) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) &&
@@ -91,8 +85,9 @@ public class BankingUser {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(id, name, debitCardNumber);
+
     }
+
 }
