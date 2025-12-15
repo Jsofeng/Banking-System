@@ -24,6 +24,21 @@ public class FileManager {
         }
     }
 
+ public static void saveBankingUsers(List<BankingUser> bankingUsers) {
+        try (FileWriter fw = new FileWriter("AccountsDB.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            for (BankingUser user : bankingUsers) {
+                fw.write("[" + user.getDebitCardNumber() + "], " +
+                                "[" + user.getName() + "], " +
+                                "[BALANCE: $" + String.format("%.2f", user.getBalance()) + "] -----> " +
+                                "[" + currentTime + "]\n"
+                );
+                System.out.println("[ID:" + user.getId() + "] SAVED TO SYSTEM");
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
 
     public static void saveAccountType(String filePath, AccountType accountType) {
         try (FileWriter fw = new FileWriter(filePath, true)) {
