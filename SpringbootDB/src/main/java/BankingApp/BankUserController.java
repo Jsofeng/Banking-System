@@ -30,13 +30,29 @@ public class BankingUserController {
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
 
-        String[] names = {
+       String[] names = {
                 "Max Verstappen", "Liam Lawson", "Lando Norris", "Oscar Piastri",
                 "George Russell", "Andrea Kimi Antonelli", "Fernando Alonso",
                 "Lance Stroll", "Pierre Gasly", "Jack Doohan", "Esteban Ocon",
                 "Oliver Bearman", "Yuki Tsunoda", "Isack Hadjar", "Alexander Albon",
                 "Carlos Sainz", "Nico Hulkenberg", "Gabriel Bortoleto",
-                "Charles Leclerc", "Lewis Hamilton"
+                "Charles Leclerc", "Lewis Hamilton",  "Michael Schumacher", "Ayrton Senna", "Alain Prost", "Niki Lauda", "Jim Clark",
+                "Juan Manuel Fangio", "Jackie Stewart", "Sebastian Vettel", "Jenson Button", "Rubens Barrichello",
+                "Nelson Piquet Sr.", "Gilles Villeneuve", "Jacques Villeneuve", "Mario Andretti", "Eddie Irvine",
+                "Damon Hill", "Graham Hill", "Phil Hill", "Ronnie Peterson", "Riccardo Patrese",
+                "Gerhard Berger", "Mika Hakkinen", "David Coulthard", "Mark Webber", "Ralf Schumacher",
+                "Heikki Kovalainen", "Jarno Trulli", "Jean-Eric Vergne", "Timo Glock", "Nico Rosberg",
+                "Kimi Raikkonen", "Robert Kubica", "Christian Klien", "Vitantonio Liuzzi", "Pedro de la Rosa",
+                "Takuma Sato", "Anthony Davidson", "Adrian Sutil", "Bruno Senna", "Patrick Depailler",
+                "Jean-Pierre Jabouille", "Maurice Trintignant", "Bruce McLaren", "Chris Amon", "Jochen Rindt",
+                "Clay Regazzoni", "John Surtees", "Tony Brooks", "Alan Jones", "Carlos Reutemann",
+                "Jacques Laffite", "Mike Hawthorn", "Peter Collins", "Hans Stuck", "Jo Bonnier",
+                "Innes Ireland", "Guy Ligier", "Jean Alesi", "Stefan Bellof", "Marc Surer",
+                "Elio de Angelis", "Henri Pescarolo", "Ivan Capelli", "Stefano Modena", "Christian Danner",
+                "Emanuele Pirro", "Olivier Panis", "Pedro Rodriguez", "Ricardo Rodriguez", "Jo Siffert",
+                "Dan Gurney", "Jack Brabham", "Denny Hulme", "Tim Schenken", "Carlos Pace",
+                "Howden Ganley", "Lucien Bianchi", "Lella Lombardi", "Andrea de Cesaris", "Riccardo Paletti",
+                "Rene Arnoux", "Jean-Pierre Beltoise", "Gabriele Tarquini", "Alfonso de Portago", "Giuseppe Farina"
         };
 
         int count = (int) (Math.random() * 20) + 1;
