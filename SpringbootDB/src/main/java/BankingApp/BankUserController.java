@@ -49,7 +49,7 @@ public class BankingUserController {
 
             bankingUsers.add(new BankingUser(acc, name, id, bal));
         }
-
+	FileManager.saveBankingUsers(bankingUsers);
         return bankingUsers; // auto converst to JSON format
 
        
