@@ -61,7 +61,8 @@ public class BankingUserController {
             Integer id = (int)  (Math.random() * 1000);
             String name = names[(int) (Math.random() * names.length)];
             String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L)); // random 13 digit acc number
-            Integer bal = (int) (Math.random() * 1_000_000);
+            double bal = Math.round(Math.random() * 1_000_000 * 100.0) / 100.0; // rounds to 2 decimal places
+
 
             bankingUsers.add(new BankingUser(acc, name, id, bal));
         }

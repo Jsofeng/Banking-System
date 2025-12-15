@@ -11,9 +11,9 @@ public class BankingUser {
     private Integer id;
     private String name;
     private String debitCardNumber;
-    private Integer balance;
+    private double balance;
 
-    public BankingUser(String debitCardNumber, String name, Integer id, Integer balance) {
+    public BankingUser(String debitCardNumber, String name, Integer id, double balance) {
         this.debitCardNumber = debitCardNumber;
         this.name = name;
         this.id = id;
