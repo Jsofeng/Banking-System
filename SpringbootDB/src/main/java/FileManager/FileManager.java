@@ -28,8 +28,8 @@ public class FileManager {
         try (FileWriter fw = new FileWriter("AccountsDB.txt", true)) {
             String currentTime = LocalDateTime.now().format(dtf);
             for (BankingUser user : bankingUsers) {
-                fw.write("[" + user.getDebitCardNumber() + "], " +
-                                "[" + user.getName() + "], " +
+                fw.write("[" + user.getDebitCardNumber() + "] , " +
+                                "[" + user.getName() + "] , " +
                                 "[BALANCE: $" + String.format("%.2f", user.getBalance()) + "] -----> " +
                                 "[" + currentTime + "]\n"
                 );
