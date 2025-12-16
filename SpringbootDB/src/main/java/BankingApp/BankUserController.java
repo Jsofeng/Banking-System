@@ -242,6 +242,30 @@ private BankingUser findUser(String accountNumber) {
 
     }
 
+@GetMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestParam String fileName, @RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam double amount) {
+        if(amount < 0) {
+            return ResponseEntity.badRequest().body("Invalid amount");
+        }
+
+        BankingUser sender = findUser(fromAccount);
+        BankingUser receiver = findUser(toAccount); // calls findUser fnc to see if user exists & returns that value and sets it to receiver
+        if (sender == null || receiver == null) {
+            return ResponseEntity.status(404).body("Account Not Found");
+        }
+
+        if(sender.getBalance() < amount) {
+            return ResponseEntity.badRequest().body("Insufficient balance");
+        }
+
+        sender.setBalance(sender.getBalance() - amount);
+        receiver.setBalance(receiver.getBalance() + amount);
+
+        FileManager.eTransactionBU(sender, receiver, amount);
+
+        return ResponseEntity.ok("Transfer Successful");
+    }
+
 
     @GetMapping(value = "/display", produces = "text/plain") // formats it so that after each statement it adds \n
     public String displayUserInfo() {
