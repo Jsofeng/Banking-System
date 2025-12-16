@@ -107,6 +107,49 @@ public class BankingUserController {
         return null;
     }
 
+private BankingUser findUser(String accountNumber) {
+        try (BufferedReader br = new BufferedReader(new FileReader("AccountsDB.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                String[] parts = line.split(" , ");
+                if (parts.length < 3) continue;
+
+                String acc = parts[0]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .trim();
+
+                String name = parts[1]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .trim();
+
+                String balancePart = parts[2].split("----->")[0];
+
+                String balStr = balancePart
+                        .replace("[BALANCE:", "")
+                        .replace("]", "")
+                        .replace("$", "")
+                        .trim();
+
+                double balance = Double.parseDouble(balStr);
+
+                System.out.println("FOUND ACCOUNT: " + acc);
+
+                if (acc.equals(accountNumber)) {
+                    return new BankingUser(acc, name, 0, balance);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("findUser error: " + e.getMessage());
+        }
+
+        return null;
+    }
+
 
     @GetMapping(value = "/bankTotal", produces = "text/plain")
     public String bankTotal(@RequestParam String fileName) {
