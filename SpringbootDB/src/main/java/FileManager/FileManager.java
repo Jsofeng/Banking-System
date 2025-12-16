@@ -155,6 +155,16 @@ public class FileManager {
         }
     }
 
+ public static void eTransactionBU(BankingUser fromAccount, BankingUser toAccount, double amount) {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("e-transfer.txt", true))) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            bw.write("[" + fromAccount.getName() + "]" + " e-Transfered" + " [" + toAccount.getName() + "] $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
 }
 
 
