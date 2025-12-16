@@ -148,7 +148,7 @@ public class FileManager {
     public static void eTransaction(AccountType fromAccount, AccountType toAccount, double amount) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("e-transfer.txt", true))) {
             String currentTime = LocalDateTime.now().format(dtf);
-            bw.write("[" + fromAccount.accountHolder + "]" + " e-Transfered" + " [" + toAccount.accountHolder + "]" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            bw.write("[" + fromAccount.accountHolder + "]" + " e-Transfered" + " [" + toAccount.accountHolder + "] $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
 
         } catch (IOException e) {
             System.out.println("Error writing to file." + e.getMessage());
