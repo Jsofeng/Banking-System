@@ -217,17 +217,20 @@ private BankingUser findUser(String accountNumber) {
     ) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
-        if (minBalance != null) {
-            users = users.stream()
-                    .filter(u -> u.getBalance() >= minBalance)
-                    .collect(Collectors.toList());
+        if (minBalance != null) { //if minBalance was provided run this
+            users = users.stream() //A stream lets us process the list step-by-step
+                    .filter(u -> u.getBalance() >= minBalance)//u -> u.getBalance() >= minBalance means:
+                                                                        //•	Keeps only users whose balance is >= minBalance
+                    .collect(Collectors.toList()); // Collects the filtered users back into a list
         }
 
         if ("balance".equalsIgnoreCase(sort)) {
             users.sort(
                     "desc".equalsIgnoreCase(order)
                             ? Comparator.comparing(BankingUser::getBalance).reversed()
-                            : Comparator.comparing(BankingUser::getBalance)
+			     // Creates a comparator that sorts BankingUser objects by balance in descending order
+                            // basically does return user1.getBalance() - user2.getBalance();
+                            : Comparator.comparing(BankingUser::getBalance) // ascending order is default
             );
         }
 
