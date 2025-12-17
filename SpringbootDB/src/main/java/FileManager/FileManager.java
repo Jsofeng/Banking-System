@@ -148,7 +148,7 @@ public class FileManager {
     public static void eTransaction(AccountType fromAccount, AccountType toAccount, double amount) {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("e-transfer.txt", true))) {
             String currentTime = LocalDateTime.now().format(dtf);
-            bw.write("[" + fromAccount.accountHolder + "]" + " e-Transfered" + " [" + toAccount.accountHolder + "]" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            bw.write("[" + fromAccount.accountHolder + "]" + " e-Transfered" + " [" + toAccount.accountHolder + "] $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
 
         } catch (IOException e) {
             System.out.println("Error writing to file." + e.getMessage());
@@ -163,6 +163,51 @@ public class FileManager {
         } catch (IOException e) {
             System.out.println("Error writing to file." + e.getMessage());
         }
+    }
+public static List<BankingUser> loadUsers(String fileName) {
+        List<BankingUser> users = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (line.isBlank()) continue;
+
+                // split into 3 parts
+                String[] parts = line.split(" , ");
+                if (parts.length < 3) continue;
+
+                String accountNumber = parts[0]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .trim();
+
+                String name = parts[1]
+                        .replace("[", "")
+                        .replace("]", "")
+                        .trim();
+
+                // [BALANCE: $159008.00] -----> [date]
+                String balancePart = parts[2].split("----->")[0];
+
+                double balance = Double.parseDouble(
+                        balancePart
+                                .replace("[BALANCE:", "")
+                                .replace("]", "")
+                                .replace("$", "")
+                                .trim()
+                );
+
+                int id = 0;
+
+                users.add(new BankingUser(accountNumber, name, id, balance));
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error loading users: " + e.getMessage());
+        }
+
+        return users;
     }
 
 }

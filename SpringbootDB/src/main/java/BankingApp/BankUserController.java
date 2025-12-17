@@ -213,6 +213,31 @@ private BankingUser findUser(String accountNumber) {
         return accounts;
     }
 
+@GetMapping("/sortByOrder")
+    public List<BankingUser> getUsers(
+            @RequestParam(required = false) String sort, // this typing sort= isn't required in the localhost url
+            @RequestParam(required = false, defaultValue = "asc") String order,
+            @RequestParam(required = false) Double minBalance
+    ) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        if (minBalance != null) {
+            users = users.stream()
+                    .filter(u -> u.getBalance() >= minBalance)
+                    .collect(Collectors.toList());
+        }
+
+        if ("balance".equalsIgnoreCase(sort)) {
+            users.sort(
+                    "desc".equalsIgnoreCase(order)
+                            ? Comparator.comparing(BankingUser::getBalance).reversed()
+                            : Comparator.comparing(BankingUser::getBalance)
+            );
+        }
+
+        return users;
+    }
+
     @GetMapping(value = "/exist", produces = "text/plain")
     public String doesUserExist(@RequestParam String accountNumbers, @RequestParam String fileName) {
         HashSet<String> accounts = new HashSet<>();
