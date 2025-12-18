@@ -26,6 +26,30 @@ public class BankingUserController {
         return Double.parseDouble(cleaned);
 
     }
+
+@PostMapping("/create")
+    public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
+        FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
+        return ResponseEntity.status(201).body(bankingUser);
+    }
+
+    @PutMapping("/deposit")
+    public ResponseEntity<String> deposit(@RequestParam String accountNumber, @RequestParam double amount) {
+        if(amount <= 0) {
+            return ResponseEntity.badRequest().body("Invalid amount");
+        }
+
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        for(BankingUser user : users) {
+            if(user.getDebitCardNumber().equals(accountNumber)) {
+                user.setBalance(user.getBalance() + amount);
+                FileManager.logDepositBU(user, amount);
+                return ResponseEntity.ok("Deposited Successfully");
+            }
+        }
+        return ResponseEntity.status(404).body("Account not found");
+    }
     @GetMapping("/generateFake") // generates a random # of fake f1 Users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
