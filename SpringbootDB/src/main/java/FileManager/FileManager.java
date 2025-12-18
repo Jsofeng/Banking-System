@@ -40,6 +40,28 @@ public class FileManager {
         }
     }
 
+    public static void saveAllUsers(String fileName, List<BankingUser> users) {
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+
+            for (BankingUser u : users) {
+                String line =
+                        "[" + u.getDebitCardNumber() + "] , " +
+                                "[" + u.getName() + "] , " +
+                                "[BALANCE: $" + String.format("%.2f", u.getBalance()) + "] -----> " +
+                                "[" + LocalDateTime.now().format(formatter) + "]";
+
+                bw.write(line);
+                bw.newLine();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error saving users: " + e.getMessage());
+        }
+    }
+
     public static void saveAccountType(String filePath, AccountType accountType) {
         try (FileWriter fw = new FileWriter(filePath, true)) {
             String currentTime = LocalDateTime.now().format(dtf);
@@ -119,6 +141,16 @@ public class FileManager {
             String currentTime = LocalDateTime.now().format(dtf);
             fw.write("[" + accountType.accountNumber + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
             fw.write("[" + accountType.accountNumber + "] NEW BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+  public static void logDepositBU(BankingUser bankingUser, double amount) {
+        try (FileWriter fw = new FileWriter("AccountDep.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] NEW BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "\n");
         } catch (IOException e) {
             System.out.println("Error writing to file." + e.getMessage());
         }
