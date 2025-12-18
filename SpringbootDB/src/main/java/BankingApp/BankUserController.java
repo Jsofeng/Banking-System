@@ -26,6 +26,81 @@ public class BankingUserController {
         return Double.parseDouble(cleaned);
 
     }
+
+@PostMapping("/create")
+    public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
+        FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
+        return ResponseEntity.status(201).body(bankingUser);
+    }
+
+    @PutMapping("/deposit")
+    public ResponseEntity<String> deposit(@RequestParam String accountNumber, @RequestParam double amount) {
+        if(amount <= 0) {
+            return ResponseEntity.badRequest().body("Invalid amount");
+        }
+
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        for(BankingUser user : users) {
+            if(user.getDebitCardNumber().equals(accountNumber)) {
+                user.setBalance(user.getBalance() + amount);
+                FileManager.logDepositBU(user, amount);
+                return ResponseEntity.ok("Deposited Successfully");
+            }
+        }
+        return ResponseEntity.status(404).body("Account not found");
+    }
+
+ @PutMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestParam String accountNumber, @RequestParam String name, @RequestParam Integer id) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+        for(BankingUser user : users) {
+            if(user.getDebitCardNumber().equals(accountNumber)) {
+                user.setName(name);
+                user.setId(id);
+                FileManager.saveAllUsers("AccountsDB.txt", users);
+                return ResponseEntity.ok("Updated Successfully");
+            }
+        }
+        return ResponseEntity.status(404).body("Account not found");
+    }
+
+    public ResponseEntity<String> deleteUser(@RequestParam String accountNumber) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        boolean removed = users.removeIf(u -> u.getDebitCardNumber().equals(accountNumber));
+
+        if(!removed) {
+            return ResponseEntity.badRequest().body("Account not found");
+        }
+        FileManager.saveAllUsers("AccountsDB.txt", users);
+        return ResponseEntity.ok().body("Deleted Successfully");
+    }
+
+
+    @GetMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestParam String fileName, @RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam double amount) {
+        if(amount < 0) {
+            return ResponseEntity.badRequest().body("Invalid amount");
+        }
+
+        BankingUser sender = findUser(fromAccount);
+        BankingUser receiver = findUser(toAccount);
+        if (sender == null || receiver == null) {
+            return ResponseEntity.status(404).body("Account(s) Not Found");
+        }
+
+        if(sender.getBalance() < amount) {
+            return ResponseEntity.badRequest().body("Insufficient balance");
+        }
+
+        sender.setBalance(sender.getBalance() - amount);
+        receiver.setBalance(receiver.getBalance() + amount);
+
+        FileManager.eTransactionBU(sender, receiver, amount);
+
+        return ResponseEntity.ok("Transfer Successful");
+    }
     @GetMapping("/generateFake") // generates a random # of fake f1 Users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
@@ -273,31 +348,6 @@ private BankingUser findUser(String accountNumber) {
         return sb.toString();
 
     }
-
-@GetMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestParam String fileName, @RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam double amount) {
-        if(amount < 0) {
-            return ResponseEntity.badRequest().body("Invalid amount");
-        }
-
-        BankingUser sender = findUser(fromAccount);
-        BankingUser receiver = findUser(toAccount); // calls findUser fnc to see if user exists & returns that value and sets it to receiver
-        if (sender == null || receiver == null) {
-            return ResponseEntity.status(404).body("Account Not Found");
-        }
-
-        if(sender.getBalance() < amount) {
-            return ResponseEntity.badRequest().body("Insufficient balance");
-        }
-
-        sender.setBalance(sender.getBalance() - amount);
-        receiver.setBalance(receiver.getBalance() + amount);
-
-        FileManager.eTransactionBU(sender, receiver, amount);
-
-        return ResponseEntity.ok("Transfer Successful");
-    }
-
 
     @GetMapping(value = "/display", produces = "text/plain") // formats it so that after each statement it adds \n
     public String displayUserInfo() {

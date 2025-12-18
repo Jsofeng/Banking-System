@@ -1,0 +1,29 @@
+### Create Banking User
+POST http://localhost:8080/api/v1/banking-users/create
+Content-Type: application/json
+
+{
+  "debitCardNumber": "555111333",
+  "name": "Charles Leclerc",
+  "id": 27,
+  "balance": 180000
+}
+
+### DELETE USER
+DELETE http://localhost:8080/api/v1/banking-users/delete/555111333
+
+### DEPOSIT
+POST http://localhost:8080/api/v1/banking-users/deposit?accountNumber=555111333&amount=500
+
+### UPDATE USER
+PUT http://localhost:8080/api/v1/banking-users/update/555111333
+Content-Type: application/json
+
+{
+  "debitCardNumber": "20398109381",
+  "name": "Lewis Hamilton",
+  "id": 44
+}
+
+### TRANSFER
+POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=123&toAccount=456&amount=300
