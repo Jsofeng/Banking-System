@@ -146,6 +146,16 @@ public class FileManager {
         }
     }
 
+  public static void logDepositBU(BankingUser bankingUser, double amount) {
+        try (FileWriter fw = new FileWriter("AccountDep.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] NEW BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
     public static void logWithdraw(AccountType accountType, double amount) {
         try(FileWriter fw = new FileWriter("AccountWithDraw.txt", true)) {
             String currentTime = LocalDateTime.now().format(dtf);
