@@ -40,6 +40,28 @@ public class FileManager {
         }
     }
 
+    public static void saveAllUsers(String fileName, List<BankingUser> users) {
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+
+            for (BankingUser u : users) {
+                String line =
+                        "[" + u.getDebitCardNumber() + "] , " +
+                                "[" + u.getName() + "] , " +
+                                "[BALANCE: $" + String.format("%.2f", u.getBalance()) + "] -----> " +
+                                "[" + LocalDateTime.now().format(formatter) + "]";
+
+                bw.write(line);
+                bw.newLine();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error saving users: " + e.getMessage());
+        }
+    }
+
     public static void saveAccountType(String filePath, AccountType accountType) {
         try (FileWriter fw = new FileWriter(filePath, true)) {
             String currentTime = LocalDateTime.now().format(dtf);
