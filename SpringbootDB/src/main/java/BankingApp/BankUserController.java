@@ -2,24 +2,20 @@ package com.example.bankingsystemsb;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import FileManager.FileManager;
+import jdk.dynalink.linker.ConversionComparator;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/banking-users")
 public class BankingUserController {
-    @GetMapping
-    public List<BankingUser> getBankingUsers() {
-        return List.of(new BankingUser("446916010129332", "Jonathan", 27, 10000),
-                new BankingUser("298318321932132", "Joji", 67, 200000),
-                new BankingUser("8231939123", "Leclerc", 16, 500000),
-                new BankingUser("29873839198312", "Max Verstappen", 1, 823281));
-    }
 
     private double parseBalance(String balanceString) {
         String cleaned = balanceString.replace("Balanced: $", "").trim();
@@ -27,7 +23,7 @@ public class BankingUserController {
 
     }
 
-@PostMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
         FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
         return ResponseEntity.status(201).body(bankingUser);
@@ -44,6 +40,7 @@ public class BankingUserController {
         for(BankingUser user : users) {
             if(user.getDebitCardNumber().equals(accountNumber)) {
                 user.setBalance(user.getBalance() + amount);
+                FileManager.saveAllUsers("AccountsDB.txt", users);
                 FileManager.logDepositBU(user, amount);
                 return ResponseEntity.ok("Deposited Successfully");
             }
@@ -51,61 +48,91 @@ public class BankingUserController {
         return ResponseEntity.status(404).body("Account not found");
     }
 
- @PutMapping("/update")
-    public ResponseEntity<String> updateUser(@RequestParam String accountNumber, @RequestParam String name, @RequestParam Integer id) {
+    @PutMapping("/update/{accountNumber}") // PathVariable doesn't need to add accountNumber=... in the URL you js write it there
+    public ResponseEntity<String> updateUser(@PathVariable String accountNumber, @RequestBody BankingUser updatedUser) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
-        for(BankingUser user : users) {
-            if(user.getDebitCardNumber().equals(accountNumber)) {
-                user.setName(name);
-                user.setId(id);
-                FileManager.saveAllUsers("AccountsDB.txt", users);
-                return ResponseEntity.ok("Updated Successfully");
+
+        boolean found = false;
+
+        for (int i = 0; i < users.size(); i++) {
+            BankingUser u = users.get(i);
+
+            if (u.getDebitCardNumber().equals(accountNumber)) {
+                u.setDebitCardNumber(updatedUser.getDebitCardNumber());
+                u.setName(updatedUser.getName());
+                u.setId(updatedUser.getId());
+                found = true;
+                break;
             }
         }
-        return ResponseEntity.status(404).body("Account not found");
+
+        if (!found) {
+            return ResponseEntity.status(404).body("Account not found");
+        }
+
+        FileManager.saveAllUsers("AccountsDB.txt", users);
+        return ResponseEntity.ok("Account updated");
     }
 
+    @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam String accountNumber) {
+
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
-        boolean removed = users.removeIf(u -> u.getDebitCardNumber().equals(accountNumber));
+        boolean removed = users.removeIf(user -> user.getDebitCardNumber().equals(accountNumber)
+        );
 
-        if(!removed) {
-            return ResponseEntity.badRequest().body("Account not found");
+        if (!removed) {
+            return ResponseEntity.status(404).body("Account not found");
         }
+
         FileManager.saveAllUsers("AccountsDB.txt", users);
-        return ResponseEntity.ok().body("Deleted Successfully");
+
+        return ResponseEntity.ok("Account deleted");
     }
 
-
     @GetMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestParam String fileName, @RequestParam String fromAccount, @RequestParam String toAccount, @RequestParam double amount) {
-        if(amount < 0) {
+    public ResponseEntity<String> transfer(
+            @RequestParam String fromAccount,
+            @RequestParam String toAccount,
+            @RequestParam double amount
+    ) {
+        if (amount <= 0) {
             return ResponseEntity.badRequest().body("Invalid amount");
         }
 
-        BankingUser sender = findUser(fromAccount);
-        BankingUser receiver = findUser(toAccount);
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        BankingUser sender = null;
+        BankingUser receiver = null;
+
+        for (BankingUser u : users) {
+            if (u.getDebitCardNumber().equals(fromAccount)) sender = u;
+            if (u.getDebitCardNumber().equals(toAccount)) receiver = u;
+        }
+
         if (sender == null || receiver == null) {
             return ResponseEntity.status(404).body("Account(s) Not Found");
         }
 
-        if(sender.getBalance() < amount) {
+        if (sender.getBalance() < amount) {
             return ResponseEntity.badRequest().body("Insufficient balance");
         }
 
         sender.setBalance(sender.getBalance() - amount);
         receiver.setBalance(receiver.getBalance() + amount);
 
+        FileManager.saveAllUsers("AccountsDB.txt", users);
         FileManager.eTransactionBU(sender, receiver, amount);
 
         return ResponseEntity.ok("Transfer Successful");
     }
-    @GetMapping("/generateFake") // generates a random # of fake f1 Users
+
+    @GetMapping("/generateFake") // generates a random amount of f1 users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
 
-       String[] names = {
+        String[] names = {
                 "Max Verstappen", "Liam Lawson", "Lando Norris", "Oscar Piastri",
                 "George Russell", "Andrea Kimi Antonelli", "Fernando Alonso",
                 "Lance Stroll", "Pierre Gasly", "Jack Doohan", "Esteban Ocon",
@@ -135,20 +162,23 @@ public class BankingUserController {
 
             Integer id = (int)  (Math.random() * 1000);
             String name = names[(int) (Math.random() * names.length)];
-            String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L)); // random 13 digit acc number
+            String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L));
             double bal = Math.round(Math.random() * 1_000_000 * 100.0) / 100.0; // rounds to 2 decimal places
-
 
             bankingUsers.add(new BankingUser(acc, name, id, bal));
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
 	FileManager.saveBankingUsers(bankingUsers);
 =======
 	FileManager.saveBankingUsers(bankingUsers)
 >>>>>>> beta
         return bankingUsers; // auto converst to JSON format
+=======
+>>>>>>> beta
 
-       
+        FileManager.saveBankingUsers(bankingUsers);
+        return bankingUsers;
 
     }
 
@@ -186,7 +216,7 @@ public class BankingUserController {
         return null;
     }
 
-private BankingUser findUser(String accountNumber) {
+    private BankingUser findUser(String accountNumber) { // try replacing the try catch w loadUsers
         try (BufferedReader br = new BufferedReader(new FileReader("AccountsDB.txt"))) {
             String line;
 
@@ -288,7 +318,8 @@ private BankingUser findUser(String accountNumber) {
         return accounts;
     }
 
-@GetMapping("/sortByOrder")
+
+    @GetMapping("/sortByOrder")
     public List<BankingUser> getUsers(
             @RequestParam(required = false) String sort, // this typing sort= isn't required in the localhost url
             @RequestParam(required = false, defaultValue = "asc") String order,
@@ -296,18 +327,19 @@ private BankingUser findUser(String accountNumber) {
     ) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
-        if (minBalance != null) { //if minBalance was provided run this
+        if (minBalance != null) { // if minBalance was provided
             users = users.stream() //A stream lets us process the list step-by-step
-                    .filter(u -> u.getBalance() >= minBalance)//u -> u.getBalance() >= minBalance means:
+                    .filter(u -> u.getBalance() >= minBalance) //u -> u.getBalance() >= minBalance means:
                                                                         //•	Keeps only users whose balance is >= minBalance
                     .collect(Collectors.toList()); // Collects the filtered users back into a list
+
         }
 
         if ("balance".equalsIgnoreCase(sort)) {
             users.sort(
                     "desc".equalsIgnoreCase(order)
                             ? Comparator.comparing(BankingUser::getBalance).reversed()
-			     // Creates a comparator that sorts BankingUser objects by balance in descending order
+                            // Creates a comparator that sorts BankingUser objects by balance in descending order
                             // basically does return user1.getBalance() - user2.getBalance();
                             : Comparator.comparing(BankingUser::getBalance) // ascending order is default
             );
@@ -315,6 +347,7 @@ private BankingUser findUser(String accountNumber) {
 
         return users;
     }
+
 
     @GetMapping(value = "/exist", produces = "text/plain")
     public String doesUserExist(@RequestParam String accountNumbers, @RequestParam String fileName) {
@@ -325,7 +358,7 @@ private BankingUser findUser(String accountNumber) {
             String line;
 
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
+                String[] parts = line.split(" , ");
                 if (parts.length > 0) {
                     String accNum = parts[0].replace("[", "").replace("]", "").trim();
                     accounts.add(accNum);
@@ -348,6 +381,7 @@ private BankingUser findUser(String accountNumber) {
         return sb.toString();
 
     }
+
 
     @GetMapping(value = "/display", produces = "text/plain") // formats it so that after each statement it adds \n
     public String displayUserInfo() {
@@ -384,3 +418,4 @@ private BankingUser findUser(String accountNumber) {
     }
 
 }
+
