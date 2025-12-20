@@ -339,6 +339,28 @@ public class BankingUserController {
         return users;
     }
 
+@GetMapping("/paginatedData")
+    public ResponseEntity<PaginatedResponse<BankingUser>> getData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        int totalUsers = users.size();
+        int start = page * size;
+        int end = Math.min(start + size, users.size());
+
+        if (start >= totalUsers) {
+            return ResponseEntity.ok(new PaginatedResponse<BankingUser>(page, size, totalUsers, Collections.<BankingUser>emptyList()
+                    )
+            );
+        }
+
+        List<BankingUser> pagedUsers = users.subList(start, end);
+
+        PaginatedResponse<BankingUser> response = new PaginatedResponse<>(page, size, totalUsers, pagedUsers);
+        return ResponseEntity.ok(response);
+
+    }
+
+
 
     @GetMapping(value = "/exist", produces = "text/plain")
     public String doesUserExist(@RequestParam String accountNumbers, @RequestParam String fileName) {
