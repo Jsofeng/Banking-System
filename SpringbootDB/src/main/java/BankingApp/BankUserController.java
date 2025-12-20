@@ -311,7 +311,9 @@ public class BankingUserController {
 
 
     @GetMapping("/sortByOrder")
-    public List<BankingUser> getUsers(
+    public ResponseEntity<List<BankingUser>> getUsers(
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultvalue = "5") int size,
             @RequestParam(required = false) String sort, // this typing sort= isn't required in the localhost url
             @RequestParam(required = false, defaultValue = "asc") String order,
             @RequestParam(required = false) Double minBalance
@@ -336,7 +338,10 @@ public class BankingUserController {
             );
         }
 
-        return users;
+        int start = page * size;
+	if(start >= users.size()) return ResponseEntity.ok(users.subList(start,end));
+
+	int end = Math.min(start + size, users.size());
     }
 
 @GetMapping("/paginatedData")
