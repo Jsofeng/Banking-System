@@ -91,7 +91,7 @@ public class BankingUserController {
         return ResponseEntity.ok("Account deleted");
     }
 
-    @GetMapping("/transfer")
+    @PostMapping("/transfer")
     public ResponseEntity<String> transfer(
             @RequestParam String fromAccount,
             @RequestParam String toAccount,
