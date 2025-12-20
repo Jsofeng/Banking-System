@@ -91,7 +91,7 @@ public class BankingUserController {
         return ResponseEntity.ok("Account deleted");
     }
 
-    @GetMapping("/transfer")
+    @PostMapping("/transfer")
     public ResponseEntity<String> transfer(
             @RequestParam String fromAccount,
             @RequestParam String toAccount,
@@ -320,7 +320,9 @@ public class BankingUserController {
 
 
     @GetMapping("/sortByOrder")
-    public List<BankingUser> getUsers(
+    public ResponseEntity<List<BankingUser>> getUsers(
+	    @RequestParam(defaultValue = "0") int page,
+	    @RequestParam(defaultvalue = "5") int size,
             @RequestParam(required = false) String sort, // this typing sort= isn't required in the localhost url
             @RequestParam(required = false, defaultValue = "asc") String order,
             @RequestParam(required = false) Double minBalance
@@ -345,8 +347,33 @@ public class BankingUserController {
             );
         }
 
-        return users;
+        int start = page * size;
+	if(start >= users.size()) return ResponseEntity.ok(users.subList(start,end));
+
+	int end = Math.min(start + size, users.size());
     }
+
+@GetMapping("/paginatedData")
+    public ResponseEntity<PaginatedResponse<BankingUser>> getData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        int totalUsers = users.size();
+        int start = page * size;
+        int end = Math.min(start + size, users.size());
+
+        if (start >= totalUsers) {
+            return ResponseEntity.ok(new PaginatedResponse<BankingUser>(page, size, totalUsers, Collections.<BankingUser>emptyList()
+                    )
+            );
+        }
+
+        List<BankingUser> pagedUsers = users.subList(start, end);
+
+        PaginatedResponse<BankingUser> response = new PaginatedResponse<>(page, size, totalUsers, pagedUsers);
+        return ResponseEntity.ok(response);
+
+    }
+
 
 
     @GetMapping(value = "/exist", produces = "text/plain")
