@@ -359,6 +359,7 @@ public class BankingUserController {
         List<BankingUser> pagedUsers = users.subList(start, end);
 
         PaginatedResponse<BankingUser> response = new PaginatedResponse<>(page, size, totalUsers, pagedUsers);
+	FileManager.savePaginatedResponse(response);
         return ResponseEntity.ok(response);
 
     }
