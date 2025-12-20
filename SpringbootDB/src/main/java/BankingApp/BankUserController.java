@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import FileManager.FileManager;
-import jdk.dynalink.linker.ConversionComparator;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -361,6 +359,7 @@ public class BankingUserController {
         List<BankingUser> pagedUsers = users.subList(start, end);
 
         PaginatedResponse<BankingUser> response = new PaginatedResponse<>(page, size, totalUsers, pagedUsers);
+	FileManager.savePaginatedResponse(response);
         return ResponseEntity.ok(response);
 
     }
