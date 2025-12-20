@@ -38,3 +38,29 @@ Content-Type: application/json
 
 ### TRANSFER
 POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=1111111111&toAccount=20398109381&amount=10234
+
+### CREATE ACCOUNT
+POST http://localhost:8080/api/v1/banking-users/create
+Content-Type: application/json
+
+{
+  "debitCardNumber": "123298218973279131",
+  "name": "Lando Cortis",
+  "id": 1,
+  "balance": 21
+}
+
+### CREATE ACCOUNT
+POST http://localhost:8080/api/v1/banking-users/create
+Content-Type: application/json
+
+{
+  "debitCardNumber": "00000000000",
+  "name": "FIA",
+  "id": 1,
+  "balance": 1290321033123
+}
+
+
+### TRANSFER
+POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=00000000000&toAccount=123298218973279131&amount=20000000
