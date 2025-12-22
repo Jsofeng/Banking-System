@@ -242,36 +242,6 @@ public static List<BankingUser> loadUsers(String fileName) {
         return users;
     }
 
- public static void savePaginatedResponse(PaginatedResponse<BankingUser> data) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("PaginatedData.json"))) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("{\n");
-            sb.append("  \"page\": ").append(data.getPage()).append(",\n");
-            sb.append("  \"size\": ").append(data.getSize()).append(",\n");
-            sb.append("  \"totalUsers\": ").append(data.getTotalUsers()).append(",\n");
-            sb.append("  \"data\": [\n");
-
-            for (int i = 0; i < data.getData().size(); i++) {
-                BankingUser u = data.getData().get(i);
-                sb.append("    {\n");
-                sb.append("      \"debitCardNumber\": \"").append(u.getDebitCardNumber()).append("\",\n");
-                sb.append("      \"name\": \"").append(u.getName()).append("\",\n");
-                sb.append("      \"id\": ").append(u.getId()).append(",\n");
-                sb.append("      \"balance\": ").append(u.getBalance()).append("\n");
-                sb.append("    }");
-                if (i < data.getData().size() - 1) sb.append(",");
-                sb.append("\n");
-            }
-
-            sb.append("  ]\n");
-            sb.append("}");
-
-            bw.write(sb.toString());
-            System.out.println("Saved successfully!");
-        } catch (IOException e) {
-            System.out.println("Error writing to file: " + e.getMessage());
-        }
-    }
 }
 
 
