@@ -23,6 +23,9 @@ public class BankingUserController {
 
     @PostMapping("/create")
     public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
+	if(bankingUser.debitCardNumber() == null || !bankingUser.debitCardNumber().matches("\\d{10,12}")); 
+		 throw new IllegalArgumentException("Invalid account number");
+
         FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
         return ResponseEntity.status(201).body(bankingUser);
     }
