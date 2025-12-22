@@ -23,6 +23,9 @@ public class BankingUserController {
 
     @PostMapping("/create")
     public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
+	if(bankingUser.debitCardNumber() == null || !bankingUser.debitCardNumber().matches("\\d{10,12}")); 
+		 throw new IllegalArgumentException("Invalid account number");
+
         FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
         return ResponseEntity.status(201).body(bankingUser);
     }
@@ -126,6 +129,31 @@ public class BankingUserController {
         return ResponseEntity.ok("Transfer Successful");
     }
 
+@GetMapping("/transferData")
+    public ResponseEntity<List<Transaction>> getTransactionData(@RequestParam String accountNumber, @RequestParam String type, @RequestParam double amount) {
+        LocalDate date = LocalDate.now();
+        List<Transaction> transactions = new ArrayList<>();
+
+        if (type.equals("DEPOSIT")) {
+            transactions.add(new Transaction(
+                    TransactionType.DEPOSIT, amount,
+                    LocalDate.now()
+            ));
+            FileManager.saveTransferData("Transactions.json", transactions);
+
+        }
+
+        if (type.equals("WITHDRAW")) {
+            transactions.add(new Transaction(
+                    TransactionType.WITHDRAW, amount,
+                    LocalDate.now()
+            ));
+
+            FileManager.saveTransferData("Transactions.json", transactions);
+        }
+
+        return ResponseEntity.ok(transactions);
+    }
     @GetMapping("/generateFake") // generates a random amount of f1 users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();

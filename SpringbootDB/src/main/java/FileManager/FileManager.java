@@ -242,34 +242,50 @@ public static List<BankingUser> loadUsers(String fileName) {
         return users;
     }
 
- public static void savePaginatedResponse(PaginatedResponse<BankingUser> data) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("PaginatedData.json"))) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("{\n");
-            sb.append("  \"page\": ").append(data.getPage()).append(",\n");
-            sb.append("  \"size\": ").append(data.getSize()).append(",\n");
-            sb.append("  \"totalUsers\": ").append(data.getTotalUsers()).append(",\n");
-            sb.append("  \"data\": [\n");
+public static void saveTransferData(String fileName, List<Transaction> transactions) {
+        try {
+            File file = new File(fileName);
 
-            for (int i = 0; i < data.getData().size(); i++) {
-                BankingUser u = data.getData().get(i);
-                sb.append("    {\n");
-                sb.append("      \"debitCardNumber\": \"").append(u.getDebitCardNumber()).append("\",\n");
-                sb.append("      \"name\": \"").append(u.getName()).append("\",\n");
-                sb.append("      \"id\": ").append(u.getId()).append(",\n");
-                sb.append("      \"balance\": ").append(u.getBalance()).append("\n");
-                sb.append("    }");
-                if (i < data.getData().size() - 1) sb.append(",");
-                sb.append("\n");
+            if (!file.exists()) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                    bw.write("[]");
+                }
             }
 
-            sb.append("  ]\n");
-            sb.append("}");
+            StringBuilder content = new StringBuilder();
+            boolean hasEntries = false;
 
-            bw.write(sb.toString());
-            System.out.println("Saved successfully!");
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.trim().equals("[") || line.trim().equals("]")) continue;
+                    if (line.contains("{")) hasEntries = true;
+                    content.append(line).append("\n");
+                }
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                bw.write("[\n");
+
+                bw.write(content.toString().trim());
+
+                for (Transaction t : transactions) {
+                    if (hasEntries) bw.write(",\n");
+
+                    bw.write("  {\n");
+                    bw.write("    \"type\": \"" + t.getType() + "\",\n");
+                    bw.write("    \"amount\": " + t.getAmount() + ",\n");
+                    bw.write("    \"date\": \"" + t.getDate() + "\"\n");
+                    bw.write("  }");
+
+                    hasEntries = true;
+                }
+
+                bw.write("\n]");
+            }
+
         } catch (IOException e) {
-            System.out.println("Error writing to file: " + e.getMessage());
+            throw new RuntimeException("Failed to save transactions", e);
         }
     }
 }
