@@ -242,6 +242,52 @@ public static List<BankingUser> loadUsers(String fileName) {
         return users;
     }
 
+public static void saveTransferData(String fileName, List<Transaction> transactions) {
+        try {
+            File file = new File(fileName);
+
+            if (!file.exists()) {
+                try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                    bw.write("[]");
+                }
+            }
+
+            StringBuilder content = new StringBuilder();
+            boolean hasEntries = false;
+
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.trim().equals("[") || line.trim().equals("]")) continue;
+                    if (line.contains("{")) hasEntries = true;
+                    content.append(line).append("\n");
+                }
+            }
+
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+                bw.write("[\n");
+
+                bw.write(content.toString().trim());
+
+                for (Transaction t : transactions) {
+                    if (hasEntries) bw.write(",\n");
+
+                    bw.write("  {\n");
+                    bw.write("    \"type\": \"" + t.getType() + "\",\n");
+                    bw.write("    \"amount\": " + t.getAmount() + ",\n");
+                    bw.write("    \"date\": \"" + t.getDate() + "\"\n");
+                    bw.write("  }");
+
+                    hasEntries = true;
+                }
+
+                bw.write("\n]");
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save transactions", e);
+        }
+    }
 }
 
 
