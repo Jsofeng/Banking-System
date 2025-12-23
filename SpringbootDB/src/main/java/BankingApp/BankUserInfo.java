@@ -12,12 +12,14 @@ public class BankingUser {
     private String name;
     private String debitCardNumber;
     private double balance;
+    private boolean active = true;
 
-    public BankingUser(String debitCardNumber, String name, Integer id, double balance) {
+    public BankingUser(String debitCardNumber, String name, Integer id, double balance, boolean active) {
         this.debitCardNumber = debitCardNumber;
         this.name = name;
         this.id = id;
         this.balance = balance;
+	this.active = active;
     }
 
     public Integer getId() {
@@ -36,6 +38,9 @@ public class BankingUser {
         return debitCardNumber;
     }
 
+    public boolean isActive() {
+	return active;
+    }
     public void setId(Integer id) {
         this.id = id;
     }
@@ -48,6 +53,9 @@ public class BankingUser {
         this.debitCardNumber = debitCardNumber;
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
     public String accountDetails() {
         return "Account Number: " + this.debitCardNumber
                 + "\nAccount Holder: " + this.name
