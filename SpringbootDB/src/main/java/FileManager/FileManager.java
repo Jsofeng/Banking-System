@@ -276,6 +276,8 @@ public class FileManager {
                 sb.append("      \"name\": \"").append(u.getName()).append("\",\n");
                 sb.append("      \"id\": ").append(u.getId()).append(",\n");
                 sb.append("      \"balance\": ").append(u.getBalance()).append("\n");
+	        sb.append("      \"active\": ").append(u.isActive()).append("\n");
+
                 sb.append("    }");
                 if (i < data.getData().size() - 1) sb.append(",");
                 sb.append("\n");
