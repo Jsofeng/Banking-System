@@ -1,10 +1,8 @@
 package com.example.bankingsystemsb;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import FileManager.FileManager;
@@ -23,10 +21,10 @@ public class BankingUserController {
 
     @PostMapping("/create")
     public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser bankingUser) {
-	if(bankingUser.debitCardNumber() == null || !bankingUser.debitCardNumber().matches("\\d{10,12}")); 
-		 throw new IllegalArgumentException("Invalid account number");
-
-        FileManager.saveBankingUser("AccountsDB.txt", bankingUser);
+       if(bankingUser.getDebitCardNumber() == null || !bankingUser.getDebitCardNumber().matches("\\d{10,12}")) {
+            throw new IllegalArgumentException("Invalid account number");
+        }
+       FileManager.saveUser("AccountsDB.txt", bankingUser);
         return ResponseEntity.status(201).body(bankingUser);
     }
 
@@ -39,7 +37,7 @@ public class BankingUserController {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
         for(BankingUser user : users) {
-            if(user.getDebitCardNumber().equals(accountNumber)) {
+            if(user.getDebitCardNumber().equals(accountNumber) && user.isActive()) {
                 user.setBalance(user.getBalance() + amount);
                 FileManager.saveAllUsers("AccountsDB.txt", users);
                 FileManager.logDepositBU(user, amount);
@@ -58,7 +56,7 @@ public class BankingUserController {
         for (int i = 0; i < users.size(); i++) {
             BankingUser u = users.get(i);
 
-            if (u.getDebitCardNumber().equals(accountNumber)) {
+            if (u.getDebitCardNumber().equals(accountNumber) && u.isActive()) {
                 u.setDebitCardNumber(updatedUser.getDebitCardNumber());
                 u.setName(updatedUser.getName());
                 u.setId(updatedUser.getId());
@@ -77,22 +75,25 @@ public class BankingUserController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@RequestParam String accountNumber) {
-
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
-        boolean removed = users.removeIf(user -> user.getDebitCardNumber().equals(accountNumber)
-        );
-
-        if (!removed) {
-            return ResponseEntity.status(404).body("Account not found");
+        boolean found = false;
+        for(BankingUser u : users) {
+            if(u.getDebitCardNumber().equals(accountNumber)) {
+                u.setActive(false);
+                found = true;
+                break;
+            }
         }
 
+        if(!found) {
+            return ResponseEntity.status(404).body("Account not found");
+        }
         FileManager.saveAllUsers("AccountsDB.txt", users);
-
-        return ResponseEntity.ok("Account deleted");
+        return ResponseEntity.ok("Account deactivated");
     }
 
-    @PostMapping("/transfer")
+    @PostMapping("/transfer") // switch to @GetMapping if you want to do it via web
     public ResponseEntity<String> transfer(
             @RequestParam String fromAccount,
             @RequestParam String toAccount,
@@ -108,8 +109,8 @@ public class BankingUserController {
         BankingUser receiver = null;
 
         for (BankingUser u : users) {
-            if (u.getDebitCardNumber().equals(fromAccount)) sender = u;
-            if (u.getDebitCardNumber().equals(toAccount)) receiver = u;
+            if (u.getDebitCardNumber().equals(fromAccount) && u.isActive()) sender = u;
+            if (u.getDebitCardNumber().equals(toAccount) && u.isActive()) receiver = u;
         }
 
         if (sender == null || receiver == null) {
@@ -129,7 +130,7 @@ public class BankingUserController {
         return ResponseEntity.ok("Transfer Successful");
     }
 
-@GetMapping("/transferData")
+    @GetMapping("/transferData")
     public ResponseEntity<List<Transaction>> getTransactionData(@RequestParam String accountNumber, @RequestParam String type, @RequestParam double amount) {
         LocalDate date = LocalDate.now();
         List<Transaction> transactions = new ArrayList<>();
@@ -154,6 +155,7 @@ public class BankingUserController {
 
         return ResponseEntity.ok(transactions);
     }
+
     @GetMapping("/generateFake") // generates a random amount of f1 users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
@@ -191,10 +193,10 @@ public class BankingUserController {
             String acc = String.valueOf((long) (Math.random() * 1_000_000_000000L));
             double bal = Math.round(Math.random() * 1_000_000 * 100.0) / 100.0; // rounds to 2 decimal places
 
-            bankingUsers.add(new BankingUser(acc, name, id, bal));
+            bankingUsers.add(new BankingUser(acc, name, id, bal, true));
         }
 
-        FileManager.saveBankingUsers(bankingUsers);
+        FileManager.saveAllUsers("AccountsDB.txt", bankingUsers);
         return bankingUsers;
 
     }
@@ -266,7 +268,7 @@ public class BankingUserController {
                 System.out.println("FOUND ACCOUNT: " + acc);
 
                 if (acc.equals(accountNumber)) {
-                    return new BankingUser(acc, name, 0, balance);
+                    return new BankingUser(acc, name, 0, balance, true);
                 }
             }
         } catch (Exception e) {
@@ -338,18 +340,22 @@ public class BankingUserController {
 
     @GetMapping("/sortByOrder")
     public ResponseEntity<List<BankingUser>> getUsers(
-	    @RequestParam(defaultValue = "0") int page,
-	    @RequestParam(defaultvalue = "5") int size,
+            @RequestParam(defaultValue = "0") int page, // page is the which section
+            @RequestParam(defaultValue = "5") int size, // how many of that section
             @RequestParam(required = false) String sort, // this typing sort= isn't required in the localhost url
             @RequestParam(required = false, defaultValue = "asc") String order,
             @RequestParam(required = false) Double minBalance
     ) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
+        //•	Keeps only users whose accounts are active
+        users = users.stream()
+                .filter(BankingUser::isActive)
+                .collect(Collectors.toList());
+
         if (minBalance != null) { // if minBalance was provided
             users = users.stream() //A stream lets us process the list step-by-step
-                    .filter(u -> u.getBalance() >= minBalance) //u -> u.getBalance() >= minBalance means:
-                                                                        //•	Keeps only users whose balance is >= minBalance
+                    .filter(u -> u.getBalance() >= minBalance)  // if a minBalance is provided take in all those useres that have a balance of minBalance
                     .collect(Collectors.toList()); // Collects the filtered users back into a list
 
         }
@@ -365,12 +371,15 @@ public class BankingUserController {
         }
 
         int start = page * size;
-	if(start >= users.size()) return ResponseEntity.ok(users.subList(start,end));
+        if(start >= users.size()) {
+            return ResponseEntity.ok(List.of()); // empty page
+        }
 
-	int end = Math.min(start + size, users.size());
+        int end  = Math.min(start + size, users.size());
+        return ResponseEntity.ok(users.subList(start, end));
     }
 
-@GetMapping("/paginatedData")
+    @GetMapping("/paginatedData")
     public ResponseEntity<PaginatedResponse<BankingUser>> getData(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
@@ -387,11 +396,10 @@ public class BankingUserController {
         List<BankingUser> pagedUsers = users.subList(start, end);
 
         PaginatedResponse<BankingUser> response = new PaginatedResponse<>(page, size, totalUsers, pagedUsers);
-	FileManager.savePaginatedResponse(response);
+        FileManager.savePaginatedResponse((response));
         return ResponseEntity.ok(response);
 
     }
-
 
 
     @GetMapping(value = "/exist", produces = "text/plain")
@@ -432,9 +440,9 @@ public class BankingUserController {
     public String displayUserInfo() {
 
         ArrayList<BankingUser> accounts = new ArrayList<>();
-        accounts.add(new BankingUser("123456789", "Lewis Hamilton", 44, 9012932));
-        accounts.add(new BankingUser("1601923921", "Charles Leclerc", 16, 16161616));
-        accounts.add(new BankingUser("0101010101", "Max Verstappen", 1, 1001010101));
+        accounts.add(new BankingUser("123456789", "Lewis Hamilton", 44, 9012932, true));
+        accounts.add(new BankingUser("1601923921", "Charles Leclerc", 16, 16161616, true));
+        accounts.add(new BankingUser("0101010101", "Max Verstappen", 1, 1001010101, true));
 
         StringBuilder sb = new StringBuilder();
         for (BankingUser u : accounts) {
@@ -462,5 +470,8 @@ public class BankingUserController {
 
     }
 
-}
+
+
+    }
+
 
