@@ -3,10 +3,11 @@ POST http://localhost:8080/api/v1/banking-users/create
 Content-Type: application/json
 
 {
-  "debitCardNumber": "555111333",
+  "debitCardNumber": "55511133312",
   "name": "Charles Leclerc",
   "id": 27,
-  "balance": 180000
+  "balance": 180000,
+  "active": true
 }
 
 
@@ -15,14 +16,15 @@ PUT http://localhost:8080/api/v1/banking-users/deposit?accountNumber=555111333&a
 
 
 ### UPDATE USER
-PUT http://localhost:8080/api/v1/banking-users/update/555111333
+PUT http://localhost:8080/api/v1/banking-users/update/55511133312
 Content-Type: application/json
 
 {
   "debitCardNumber": "20398109381",
   "name": "Lewis Hamilton",
   "id": 44,
-  "balance": 185000
+  "balance": 185000,
+  "active": true
 }
 
 ###CREATE LECLERC
@@ -30,11 +32,43 @@ POST http://localhost:8080/api/v1/banking-users/create
 Content-Type: application/json
 
 {
-"debitCardNumber": "1111111111",
+"debitCardNumber": "11111111111",
 "name": "Max Verstappen",
 "id": 27,
-"balance": 180000
+"balance": 180000,
+  "active": true
 }
 
 ### TRANSFER
-POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=1111111111&toAccount=20398109381&amount=10234
+POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=11111111111&toAccount=20398109381&amount=10234
+
+### CREATE ACCOUNT
+POST http://localhost:8080/api/v1/banking-users/create
+Content-Type: application/json
+
+{
+  "debitCardNumber": "123298218973279131",
+  "name": "Lando Cortis",
+  "id": 1,
+  "balance": 21,
+  "active": true
+}
+
+### CREATE ACCOUNT
+POST http://localhost:8080/api/v1/banking-users/create
+Content-Type: application/json
+
+{
+  "debitCardNumber": "000000000000",
+  "name": "FIA",
+  "id": 1,
+  "balance": 1290321033123,
+  "active": true
+}
+
+
+### TRANSFER
+POST http://localhost:8080/api/v1/banking-users/transfer?fromAccount=000000000000&toAccount=123298218973279131&amount=20000000
+
+### DELETE ACCOUNT
+DELETE http://localhost:8080/api/v1/banking-users/delete?accountNumber=000000000000
