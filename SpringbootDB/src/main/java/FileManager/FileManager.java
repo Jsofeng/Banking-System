@@ -232,7 +232,7 @@ public static List<BankingUser> loadUsers(String fileName) {
 
                 int id = 0;
 
-                users.add(new BankingUser(accountNumber, name, id, balance));
+                users.add(new BankingUser(accountNumber, name, id, balance, true));
             }
 
         } catch (IOException e) {
