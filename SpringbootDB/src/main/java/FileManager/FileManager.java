@@ -213,12 +213,14 @@ public class FileManager {
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-
-            while ((line = br.readLine()) != null) {
+                                                                                                                                                                                       
+                                                                                                                                                       while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue;
 
-                String[] parts = line.split(" , ");
-                if (parts.length < 3) continue; // allow old records
+                String cleanLine = line.split(" -----> ")[0];
+
+                String[] parts = cleanLine.split(" , ");
+                if (parts.length < 4) continue;
 
                 String accountNumber = parts[0]
                         .replace("[", "")
@@ -238,21 +240,16 @@ public class FileManager {
                                 .trim()
                 );
 
-                boolean active = true; // default
-
-                // ONLY parse ACTIVE if it exists
-                if (parts.length >= 4 && parts[3].contains("ACTIVE")) {
-                    String activePart = parts[3]
-                            .split("----->")[0]   // remove date
-                            .replace("[ACTIVE:", "")
-                            .replace("]", "")
-                            .trim();
-
-                    active = Boolean.parseBoolean(activePart);
-                }
+                boolean active = Boolean.parseBoolean(
+                        parts[3]
+                                .replace("[ACTIVE:", "")
+                                .replace("]", "")
+                                .trim()
+                );
 
                 users.add(new BankingUser(accountNumber, name, 0, balance, active));
             }
+
 
         } catch (IOException e) {
             System.out.println("Error loading users: " + e.getMessage());
@@ -275,7 +272,7 @@ public class FileManager {
                 sb.append("      \"debitCardNumber\": \"").append(u.getDebitCardNumber()).append("\",\n");
                 sb.append("      \"name\": \"").append(u.getName()).append("\",\n");
                 sb.append("      \"id\": ").append(u.getId()).append(",\n");
-                sb.append("      \"balance\": ").append(u.getBalance()).append("\n");
+                sb.append("      \"balance\": ").append(u.getBalance()).append(",\n");
 	        sb.append("      \"active\": ").append(u.isActive()).append("\n");
 
                 sb.append("    }");
