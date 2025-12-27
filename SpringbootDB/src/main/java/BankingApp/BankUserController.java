@@ -156,6 +156,20 @@ public class BankingUserController {
         return ResponseEntity.ok(transactions);
     }
 
+
+    @GetMapping("/status")
+    public ResponseEntity<List<BankingUser>> accountStatus(@RequestParam boolean active) {
+
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        List<BankingUser> filteredUsers = users.stream()
+                .filter(u -> u.isActive() == active)
+                .toList();
+
+        return ResponseEntity.ok(filteredUsers);
+    }
+
+
     @GetMapping("/generateFake") // generates a random amount of f1 users
     public List<BankingUser> generateFake() {
         List<BankingUser> bankingUsers = new ArrayList<>();
