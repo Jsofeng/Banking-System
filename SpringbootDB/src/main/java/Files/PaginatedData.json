@@ -1,0 +1,42 @@
+{
+  "page": 0,
+  "size": 5,
+  "totalUsers": 19,
+  "data": [
+    {
+      "debitCardNumber": "479598731767",
+      "name": "Isack Hadjar",
+      "id": 0,
+      "balance": 210267.44,
+      "active": true
+    },
+    {
+      "debitCardNumber": "234740123685",
+      "name": "Carlos Reutemann",
+      "id": 0,
+      "balance": 740252.56,
+      "active": true
+    },
+    {
+      "debitCardNumber": "142872582830",
+      "name": "Clay Regazzoni",
+      "id": 0,
+      "balance": 26693.97,
+      "active": true
+    },
+    {
+      "debitCardNumber": "257356003387",
+      "name": "Gilles Villeneuve",
+      "id": 0,
+      "balance": 236372.49,
+      "active": true
+    },
+    {
+      "debitCardNumber": "396316927833",
+      "name": "Timo Glock",
+      "id": 0,
+      "balance": 519770.82,
+      "active": true
+    }
+  ]
+}
