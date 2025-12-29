@@ -73,7 +73,7 @@ public class BankingUserController {
         return ResponseEntity.ok("Account updated");
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/deactivate")
     public ResponseEntity<String> deleteUser(@RequestParam String accountNumber) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
@@ -91,6 +91,23 @@ public class BankingUserController {
         }
         FileManager.saveAllUsers("AccountsDB.txt", users);
         return ResponseEntity.ok("Account deactivated");
+    }
+
+    @PutMapping("/reactivate")
+    public ResponseEntity<String> reactivateUser(@RequestParam String accountNumber) {
+        List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
+
+        for(BankingUser u : users) {
+            if(u.getDebitCardNumber().equals(accountNumber)) {
+                u.setActive(true);
+
+                FileManager.saveAllUsers("AccountsDB.txt", users);
+                return ResponseEntity.ok("Account Re-activated");
+            }
+        }
+
+        return ResponseEntity.status(404).body("Account not found");
+
     }
 
     @PostMapping("/transfer") // switch to @GetMapping if you want to do it via web
