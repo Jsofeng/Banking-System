@@ -1,12 +1,14 @@
 [
-{
+  {
+    "accountNumber": "876268139728",
     "type": "DEPOSIT",
-    "amount": 21.0,
-    "date": "2025-12-21"
+    "amount": 10000.0,
+    "date": "2025-12-28"
   },
   {
-    "type": "WITHDRAW",
-    "amount": 21.0,
-    "date": "2025-12-21"
+    "accountNumber": "876268139728",
+    "type": "DEPOSIT",
+    "amount": 10000.0,
+    "date": "2025-12-28"
   }
 ]
