@@ -153,7 +153,7 @@ public class BankingUserController {
         List<Transaction> transactions = new ArrayList<>();
 
         if (type.equals("DEPOSIT")) {
-            transactions.add(new Transaction(
+            transactions.add(new Transaction(accountNumber,
                     TransactionType.DEPOSIT, amount,
                     LocalDate.now()
             ));
@@ -162,7 +162,7 @@ public class BankingUserController {
         }
 
         if (type.equals("WITHDRAW")) {
-            transactions.add(new Transaction(
+            transactions.add(new Transaction(accountNumber,
                     TransactionType.WITHDRAW, amount,
                     LocalDate.now()
             ));

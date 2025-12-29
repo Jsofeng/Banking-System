@@ -321,6 +321,7 @@ public class FileManager {
                     if (hasEntries) bw.write(",\n");
 
                     bw.write("  {\n");
+		    bw.write("    \"accountNumber\": \"" + t.getAccountNumber() + "\",\n");
                     bw.write("    \"type\": \"" + t.getType() + "\",\n");
                     bw.write("    \"amount\": " + t.getAmount() + ",\n");
                     bw.write("    \"date\": \"" + t.getDate() + "\"\n");
