@@ -73,7 +73,7 @@ public class BankingUserController {
         return ResponseEntity.ok("Account updated");
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/deactivate")
     public ResponseEntity<String> deleteUser(@RequestParam String accountNumber) {
         List<BankingUser> users = FileManager.loadUsers("AccountsDB.txt");
 
