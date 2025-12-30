@@ -337,4 +337,70 @@ public class FileManager {
             throw new RuntimeException("Failed to save transactions", e);
         }
     }
+   public static List<Transaction> loadTransactions(String fileName) {
+        List<Transaction> transactions = new ArrayList<>();
+
+        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            String accountNumber = null;
+            TransactionType type = null;
+            double amount = 0;
+            LocalDate date = null;
+
+            while((line = br.readLine()) != null) {
+                line = line.trim();
+
+                if (line.equals("[") || line.equals("]") || line.isEmpty()) continue; // Skip array brackets
+
+                if(line.equals("{")) {
+                    accountNumber = null;
+                    type = null;
+                    amount = 0;
+                    date = null;
+                }
+
+                if (line.contains("\"accountNumber\"")) {
+                    accountNumber = line.split(":")[1]
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+                }
+
+                if (line.contains("\"type\"")) {
+                    String typeStr = line.split(":")[1]
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+
+                    type = TransactionType.valueOf(typeStr);
+                }
+
+                if (line.contains("\"amount\"")) {
+                    amount = Double.parseDouble(
+                            line.split(":")[1]
+                                    .replace(",", "")
+                                    .trim()
+                    );
+                }
+
+                if (line.contains("\"date\"")) {
+                    date = LocalDate.parse(
+                            line.split(":")[1]
+                                    .replace("\"", "")
+                                    .replace(",", "")
+                                    .trim()
+                    );
+                }
+
+                if(line.startsWith("}") && accountNumber != null) {
+                    transactions.add(new Transaction(accountNumber, type, amount, date));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        return transactions;
+    }
+
 }
