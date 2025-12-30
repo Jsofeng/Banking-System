@@ -110,6 +110,19 @@ public class BankingUserController {
 
     }
 
+    @GetMapping("/summary/{accountNumber}")
+    public ResponseEntity<List<Transaction>> accountSummary(@PathVariable String accountNumber) {
+        List<Transaction> transactions = FileManager.loadTransactions("Transactions.json");
+
+        List<Transaction> userTransactions = transactions.stream().filter(t -> t.getAccountNumber()
+                .equals(accountNumber))
+                .toList();
+
+        return ResponseEntity.ok(userTransactions);
+    }
+
+
+
     @PostMapping("/transfer") // switch to @GetMapping if you want to do it via web
     public ResponseEntity<String> transfer(
             @RequestParam String fromAccount,
