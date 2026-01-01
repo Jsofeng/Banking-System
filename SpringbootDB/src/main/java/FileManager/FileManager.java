@@ -1,11 +1,9 @@
 package FileManager;
-import com.example.bankingsystemsb.AccountType;
-import com.example.bankingsystemsb.BankingUser;
-import com.example.bankingsystemsb.PaginatedResponse;
-import com.example.bankingsystemsb.Transaction;
+import com.example.bankingsystemsb.*;
 
 
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -213,8 +211,8 @@ public class FileManager {
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-                                                                                                                                                                                       
-                                                                                                                                                       while ((line = br.readLine()) != null) {
+
+            while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue;
 
                 String cleanLine = line.split(" -----> ")[0];
@@ -250,7 +248,6 @@ public class FileManager {
                 users.add(new BankingUser(accountNumber, name, 0, balance, active));
             }
 
-
         } catch (IOException e) {
             System.out.println("Error loading users: " + e.getMessage());
         }
@@ -273,8 +270,7 @@ public class FileManager {
                 sb.append("      \"name\": \"").append(u.getName()).append("\",\n");
                 sb.append("      \"id\": ").append(u.getId()).append(",\n");
                 sb.append("      \"balance\": ").append(u.getBalance()).append(",\n");
-	        sb.append("      \"active\": ").append(u.isActive()).append("\n");
-
+                sb.append("      \"active\": ").append(u.isActive()).append("\n");
                 sb.append("    }");
                 if (i < data.getData().size() - 1) sb.append(",");
                 sb.append("\n");
@@ -291,59 +287,41 @@ public class FileManager {
     }
 
     public static void saveTransferData(String fileName, List<Transaction> transactions) {
-        try {
-            File file = new File(fileName);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, false))) {
 
-            if (!file.exists()) {
-                try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-                    bw.write("[]");
+            bw.write("[\n");
+
+            for (int i = 0; i < transactions.size(); i++) {
+                Transaction t = transactions.get(i);
+
+                bw.write("  {\n");
+                bw.write("    \"accountNumber\": \"" + t.getAccountNumber() + "\",\n");
+                bw.write("    \"type\": \"" + t.getType() + "\",\n");
+                bw.write("    \"balance\": " + t.getBalance() + ",\n");
+                bw.write("    \"amount\": " + t.getAmount() + ",\n");
+                bw.write("    \"date\": \"" + t.getDate() + "\"\n");
+                bw.write("  }");
+
+                if (i < transactions.size() - 1) {
+                    bw.write(",");
                 }
+                bw.write("\n");
             }
 
-            StringBuilder content = new StringBuilder();
-            boolean hasEntries = false;
-
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line.trim().equals("[") || line.trim().equals("]")) continue;
-                    if (line.contains("{")) hasEntries = true;
-                    content.append(line).append("\n");
-                }
-            }
-
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-                bw.write("[\n");
-
-                bw.write(content.toString().trim());
-
-                for (Transaction t : transactions) {
-                    if (hasEntries) bw.write(",\n");
-
-                    bw.write("  {\n");
-		    bw.write("    \"accountNumber\": \"" + t.getAccountNumber() + "\",\n");
-                    bw.write("    \"type\": \"" + t.getType() + "\",\n");
-                    bw.write("    \"amount\": " + t.getAmount() + ",\n");
-                    bw.write("    \"date\": \"" + t.getDate() + "\"\n");
-                    bw.write("  }");
-
-                    hasEntries = true;
-                }
-
-                bw.write("\n]");
-            }
-
+            bw.write("]");
         } catch (IOException e) {
             throw new RuntimeException("Failed to save transactions", e);
         }
     }
-   public static List<Transaction> loadTransactions(String fileName) {
+
+    public static List<Transaction> loadTransactions(String fileName) {
         List<Transaction> transactions = new ArrayList<>();
 
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             String accountNumber = null;
             TransactionType type = null;
+            double balance = 0.0;
             double amount = 0;
             LocalDate date = null;
 
@@ -355,12 +333,13 @@ public class FileManager {
                 if(line.equals("{")) {
                     accountNumber = null;
                     type = null;
+                    balance = 0.0;
                     amount = 0;
                     date = null;
                 }
 
                 if (line.contains("\"accountNumber\"")) {
-                    accountNumber = line.split(":")[1]
+                    accountNumber = line.split(":")[1] // retrieves the second half aka the accountNumber
                             .replace("\"", "")
                             .replace(",", "")
                             .trim();
@@ -373,6 +352,14 @@ public class FileManager {
                             .trim();
 
                     type = TransactionType.valueOf(typeStr);
+                }
+
+                if (line.contains("\"balance\"")) {
+                    balance = Double.parseDouble(
+                            line.split(":")[1]
+                                    .replace(",", "")
+                                    .trim()
+                    );
                 }
 
                 if (line.contains("\"amount\"")) {
@@ -393,7 +380,7 @@ public class FileManager {
                 }
 
                 if(line.startsWith("}") && accountNumber != null) {
-                    transactions.add(new Transaction(accountNumber, type, amount, date));
+                    transactions.add(new Transaction(accountNumber, type, balance, amount, date));
                 }
             }
         } catch (IOException e) {
@@ -402,5 +389,4 @@ public class FileManager {
 
         return transactions;
     }
-
 }
