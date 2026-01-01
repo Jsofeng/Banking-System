@@ -5,14 +5,16 @@ import java.time.LocalDate;
 public class Transaction {
     private String accountNumber;
     private TransactionType type;
+    private double balance;
     private double amount;
     private LocalDate date;
 
     public Transaction() {}
 
-    public Transaction(String accountNumber, TransactionType type, double amount, LocalDate date) {
+    public Transaction(String accountNumber, TransactionType type, double balance, double amount, LocalDate date) {
 	this.accountNumber = accountNumber;
         this.type = type;
+	this.balance = balance;
         this.amount = amount;
         this.date = date;
     }
@@ -25,6 +27,10 @@ public class Transaction {
         return type;
     }
 
+    public double getBalance() {
+	return balance;
+    }
+
     public double getAmount() {
 	return amount;
     }
@@ -35,6 +41,10 @@ public class Transaction {
 
     public void setType(TransactionType type) {
         this.type = type;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public void setAmount(double amount) {
