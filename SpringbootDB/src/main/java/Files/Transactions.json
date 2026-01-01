@@ -1,38 +1,23 @@
 [
-{
-    "accountNumber": "876268139728",
+  {
+    "accountNumber": "577420589159",
     "type": "DEPOSIT",
-    "amount": 10000.00,
-    "date": "2025-12-28"
+    "balance": 500.0,
+    "amount": 500.0,
+    "date": "2025-12-31"
   },
   {
-    "accountNumber": "89123213312",
+    "accountNumber": "577420589159",
     "type": "DEPOSIT",
-    "amount": 10000.00,
-    "date": "2025-12-28"
+    "balance": 1000.0,
+    "amount": 500.0,
+    "date": "2025-12-31"
   },
   {
-    "accountNumber": "89123213312",
-    "type": "WITHDRAW",
-    "amount": 100.00,
-    "date": "2025-12-28"
-  },
-  {
-    "accountNumber": "396316927833",
+    "accountNumber": "577420589159",
     "type": "DEPOSIT",
-    "amount": 10000.0,
-    "date": "2025-12-29"
-  },
-  {
-    "accountNumber": "396316927833",
-    "type": "DEPOSIT",
-    "amount": 200000.0,
-    "date": "2025-12-29"
-  },
-  {
-    "accountNumber": "396316927833",
-    "type": "WITHDRAW",
-    "amount": 2193.0,
-    "date": "2025-12-29"
+    "balance": 1500.0,
+    "amount": 500.0,
+    "date": "2025-12-31"
   }
 ]
