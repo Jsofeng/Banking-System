@@ -161,41 +161,74 @@ public class BankingUserController {
     }
 
     @GetMapping("/transferData")
-    public ResponseEntity<List<Transaction>> getTransactionData(@RequestParam String accountNumber, @RequestParam String type, @RequestParam double amount) {
-        LocalDate date = LocalDate.now();
-        List<Transaction> transactions = new ArrayList<>();
+    public ResponseEntity<List<Transaction>> getTransactionData(
+            @RequestParam String accountNumber,
+            @RequestParam String type,
+            @RequestParam double amount) {
 
-        if (type.equals("DEPOSIT")) {
-            transactions.add(new Transaction(accountNumber,
-                    TransactionType.DEPOSIT, amount,
-                    LocalDate.now()
-            ));
-            FileManager.saveTransferData("Transactions.json", transactions);
+        List<Transaction> transactions =
+                FileManager.loadTransactions("Transactions.json");
 
+        // get last balance for this account
+        double balance = 0.0;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            if (transactions.get(i).getAccountNumber().equals(accountNumber)) {
+                balance = transactions.get(i).getBalance();
+                break;
+            }
         }
 
-        if (type.equals("WITHDRAW")) {
-            transactions.add(new Transaction(accountNumber,
-                    TransactionType.WITHDRAW, amount,
-                    LocalDate.now()
-            ));
+        Transaction acc;
 
-            FileManager.saveTransferData("Transactions.json", transactions);
+        switch (type) {
+            case "DEPOSIT":
+                balance += amount;
+                acc = new Transaction(
+                        accountNumber,
+                        TransactionType.DEPOSIT,
+                        balance,
+                        amount,
+                        LocalDate.now()
+                );
+                break;
+
+            case "WITHDRAW":
+                balance -= amount;
+                acc = new Transaction(
+                        accountNumber,
+                        TransactionType.WITHDRAW,
+                        balance,
+                        amount,
+                        LocalDate.now()
+                );
+                break;
+
+            case "ETRANSFER":
+                balance -= amount;
+                acc = new Transaction(
+                        accountNumber,
+                        TransactionType.ETRANSFER,
+                        balance,
+                        amount,
+                        LocalDate.now()
+                );
+                break;
+
+            default:
+                return ResponseEntity.badRequest().build();
         }
-       
-	 if(type.equals("ETRANSFER")) {
-            transactions.add(new Transaction(accountNumber,
-                    TransactionType.ETRANSFER, amount,
-                    LocalDate.now()
-            ));
 
-            FileManager.saveTransferData("Transactions.json", transactions);
-        }
+        transactions.add(acc);
 
-        return ResponseEntity.ok(transactions);
-    }
+        FileManager.saveTransferData("Transactions.json", transactions);
 
+        List<Transaction> accountTransactions = transactions.stream()
+                .filter(t -> t.getAccountNumber().equals(accountNumber))
+                .toList();
 
+        return ResponseEntity.ok(accountTransactions);
+    }            
+                                                                
     @GetMapping("/status")
     public ResponseEntity<List<BankingUser>> accountStatus(@RequestParam boolean active) {
 
