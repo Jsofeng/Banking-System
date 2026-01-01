@@ -5,6 +5,7 @@ public enum TransactionType { // enum is a a special type of class used to defin
     WITHDRAW,
     TRANSFER_IN,
     TRANSFER_OUT
+    ETRANSFER
 }
 
 

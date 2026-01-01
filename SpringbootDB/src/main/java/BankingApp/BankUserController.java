@@ -182,6 +182,15 @@ public class BankingUserController {
 
             FileManager.saveTransferData("Transactions.json", transactions);
         }
+       
+	 if(type.equals("ETRANSFER")) {
+            transactions.add(new Transaction(accountNumber,
+                    TransactionType.ETRANSFER, amount,
+                    LocalDate.now()
+            ));
+
+            FileManager.saveTransferData("Transactions.json", transactions);
+        }
 
         return ResponseEntity.ok(transactions);
     }
