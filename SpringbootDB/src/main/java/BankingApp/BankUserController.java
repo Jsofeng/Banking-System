@@ -228,6 +228,26 @@ public class BankingUserController {
 
         return ResponseEntity.ok(accountTransactions);
     }            
+
+ @GetMapping("/TransactionType/{accountNumber}/{type}")
+    public ResponseEntity<List<Transaction>> getAccountTransactions(@PathVariable String accountNumber, @PathVariable String type) {
+        List<Transaction> transactions = FileManager.loadTransactions("Transactions.json");
+
+        TransactionType transactionType;
+
+        try {
+            transactionType = TransactionType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ArrayList<>());
+        }
+
+        List<Transaction> filtered = transactions.stream()
+                .filter(t -> t.getAccountNumber().equals(accountNumber))
+                .filter(t -> t.getType().equals(transactionType))
+                .toList();
+
+        return ResponseEntity.ok(filtered);
+    }
                                                                 
     @GetMapping("/status")
     public ResponseEntity<List<BankingUser>> accountStatus(@RequestParam boolean active) {
