@@ -19,5 +19,26 @@
     "balance": 1500.0,
     "amount": 500.0,
     "date": "2025-12-31"
+  },
+  {
+    "accountNumber": "876268139728",
+    "type": "DEPOSIT",
+    "balance": 1000.0,
+    "amount": 1000.0,
+    "date": "2026-01-03"
+  },
+  {
+    "accountNumber": "876268139728",
+    "type": "WITHDRAW",
+    "balance": 980.0,
+    "amount": 20.0,
+    "date": "2026-01-03"
+  },
+  {
+    "accountNumber": "876268139728",
+    "type": "ETRANSFER",
+    "balance": 960.0,
+    "amount": 20.0,
+    "date": "2026-01-03"
   }
 ]
