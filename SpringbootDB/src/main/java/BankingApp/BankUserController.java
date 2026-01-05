@@ -161,13 +161,22 @@ public class BankingUserController {
     }
 
     @GetMapping("/transferData")
-    public ResponseEntity<List<Transaction>> getTransactionData(
+   public ResponseEntity<List<Transaction>> getTransactionData(
             @RequestParam String accountNumber,
+	    @RequestParam String accountType,  
             @RequestParam String type,
             @RequestParam double amount) {
 
         List<Transaction> transactions =
                 FileManager.loadTransactions("Transactions.json");
+
+  	AccountTP accountTP;
+
+      try {
+          accountTP = AccountTP.valueOf(accountType);
+      } catch (IllegalArgumentException e) {
+          return ResponseEntity.badRequest().body(new ArrayList<>());
+      }
 
         // get last balance for this account
         double balance = 0.0;
@@ -185,6 +194,7 @@ public class BankingUserController {
                 balance += amount;
                 acc = new Transaction(
                         accountNumber,
+			accountTP,
                         TransactionType.DEPOSIT,
                         balance,
                         amount,
@@ -196,6 +206,7 @@ public class BankingUserController {
                 balance -= amount;
                 acc = new Transaction(
                         accountNumber,
+			accountTP,
                         TransactionType.WITHDRAW,
                         balance,
                         amount,
@@ -207,6 +218,7 @@ public class BankingUserController {
                 balance -= amount;
                 acc = new Transaction(
                         accountNumber,
+			accountTP,
                         TransactionType.ETRANSFER,
                         balance,
                         amount,
