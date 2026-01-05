@@ -1,6 +1,7 @@
 [
   {
     "accountNumber": "577420589159",
+    "accountType": "CHEQUING",
     "type": "DEPOSIT",
     "balance": 500.0,
     "amount": 500.0,
@@ -8,6 +9,7 @@
   },
   {
     "accountNumber": "577420589159",
+    "accountType": "CHEQUING",
     "type": "DEPOSIT",
     "balance": 1000.0,
     "amount": 500.0,
@@ -15,6 +17,7 @@
   },
   {
     "accountNumber": "577420589159",
+    "accountType": "CHEQUING",
     "type": "DEPOSIT",
     "balance": 1500.0,
     "amount": 500.0,
@@ -22,6 +25,7 @@
   },
   {
     "accountNumber": "876268139728",
+    "accountType": "CHEQUING",
     "type": "DEPOSIT",
     "balance": 1000.0,
     "amount": 1000.0,
@@ -29,6 +33,7 @@
   },
   {
     "accountNumber": "876268139728",
+    "accountType": "CHEQUING",
     "type": "WITHDRAW",
     "balance": 980.0,
     "amount": 20.0,
@@ -36,9 +41,26 @@
   },
   {
     "accountNumber": "876268139728",
+    "accountType": "CHEQUING",
     "type": "ETRANSFER",
     "balance": 960.0,
     "amount": 20.0,
     "date": "2026-01-03"
+  },
+  {
+    "accountNumber": "11111111111",
+    "accountType": "CHEQUING",
+    "type": "DEPOSIT",
+    "balance": 1000.0,
+    "amount": 1000.0,
+    "date": "2026-01-04"
+  },
+  {
+    "accountNumber": "11111111111",
+    "accountType": "SAVINGS",
+    "type": "WITHDRAW",
+    "balance": 800.0,
+    "amount": 200.0,
+    "date": "2026-01-04"
   }
 ]
