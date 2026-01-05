@@ -296,6 +296,7 @@ public class FileManager {
 
                 bw.write("  {\n");
                 bw.write("    \"accountNumber\": \"" + t.getAccountNumber() + "\",\n");
+	        bw.write("    \"accountType\": \"" + t.getAccountType() + "\",\n");
                 bw.write("    \"type\": \"" + t.getType() + "\",\n");
                 bw.write("    \"balance\": " + t.getBalance() + ",\n");
                 bw.write("    \"amount\": " + t.getAmount() + ",\n");
@@ -320,6 +321,7 @@ public class FileManager {
         try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             String accountNumber = null;
+	    AccountTP accType = null;
             TransactionType type = null;
             double balance = 0.0;
             double amount = 0;
@@ -332,6 +334,7 @@ public class FileManager {
 
                 if(line.equals("{")) {
                     accountNumber = null;
+		    accType = null;
                     type = null;
                     balance = 0.0;
                     amount = 0;
@@ -343,6 +346,15 @@ public class FileManager {
                             .replace("\"", "")
                             .replace(",", "")
                             .trim();
+                }
+
+		if(line.contains("\"accountType\"")) {
+                    String strAccType = line.split(":")[1]
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+
+                    accType = AccountTP.valueOf(strAccType);
                 }
 
                 if (line.contains("\"type\"")) {
@@ -380,7 +392,7 @@ public class FileManager {
                 }
 
                 if(line.startsWith("}") && accountNumber != null) {
-                    transactions.add(new Transaction(accountNumber, type, balance, amount, date));
+                    transactions.add(new Transaction(accountNumber, accType, type, balance, amount, date));
                 }
             }
         } catch (IOException e) {
