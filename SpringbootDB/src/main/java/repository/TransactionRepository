@@ -1,0 +1,213 @@
+package com.example.bankingsystemsb.repository;
+
+import com.example.bankingsystemsb.model.*;
+
+import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TransactionRepository {
+
+    static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static void logTransaction(AccountType fromAccount, AccountType toAccount, double amount) {
+        try (FileWriter fw = new FileWriter("Transactions.json", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[E-TRANSFER] "
+                    + "[" + fromAccount.accountNumber + "] "
+                    + "sent $" + String.format("%.2f", amount)
+                    + " to [" + toAccount.accountNumber + "]"
+                    + " -----> " + dtf + "\n");
+
+            fw.write("[" + fromAccount.accountNumber + "] NEW BALANCE: $"
+                    + String.format("%.2f", fromAccount.balance) + "\n");
+            fw.write("[" + toAccount.accountNumber + "] NEW BALANCE: $"
+                    + String.format("%.2f", toAccount.balance) + "\n\n");
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+
+    public static void logDeposit(AccountType accountType, double amount) {
+        try (FileWriter fw = new FileWriter("AccountDep.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + accountType.accountNumber + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + accountType.accountNumber + "] NEW BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+    public static void logDepositBU(BankingUser bankingUser, double amount) {
+        try (FileWriter fw = new FileWriter("AccountDep.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] Deposited --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + bankingUser.getDebitCardNumber() + "] NEW BALANCE: $" + String.format("%.2f", bankingUser.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+    public static void logWithdraw(AccountType accountType, double amount) {
+        try (FileWriter fw = new FileWriter("AccountWithDraw.txt", true)) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            fw.write("[" + accountType.accountNumber + "] Withdrew --> $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+            fw.write("[" + accountType.accountNumber + "] NEW BALANCE: $" + String.format("%.2f", accountType.getBalance()) + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+
+    public static void logLoans(AccountType accountType, double loan) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Loans.txt", true))) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            bw.write("[" + accountType.accountNumber + "]" + "[" + accountType.accountHolder + "]" + " Loaned --> $" + String.format("%.2f", loan) + " At [" + currentTime + "]\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+    public static void eTransaction(AccountType fromAccount, AccountType toAccount, double amount) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("e-transfer.txt", true))) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            bw.write("[" + fromAccount.accountHolder + "]" + " e-Transfered" + " [" + toAccount.accountHolder + "] $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+    public static void eTransactionBU(BankingUser fromAccount, BankingUser toAccount, double amount) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("e-transfer.txt", true))) {
+            String currentTime = LocalDateTime.now().format(dtf);
+            bw.write("[" + fromAccount.getName() + "]" + " e-Transfered" + " [" + toAccount.getName() + "] $" + String.format("%.2f", amount) + " At [" + currentTime + "]\n");
+
+        } catch (IOException e) {
+            System.out.println("Error writing to file." + e.getMessage());
+        }
+    }
+
+    public static void saveTransferData(String fileName, List<Transaction> transactions) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, false))) {
+
+            bw.write("[\n");
+
+            for (int i = 0; i < transactions.size(); i++) {
+                Transaction t = transactions.get(i);
+
+                bw.write("  {\n");
+                bw.write("    \"accountNumber\": \"" + t.getAccountNumber() + "\",\n");
+                bw.write("    \"accountType\": \"" + t.getAccountType() + "\",\n");
+                bw.write("    \"type\": \"" + t.getType() + "\",\n");
+                bw.write("    \"balance\": " + t.getBalance() + ",\n");
+                bw.write("    \"amount\": " + t.getAmount() + ",\n");
+                bw.write("    \"date\": \"" + t.getDate() + "\"\n");
+                bw.write("  }");
+
+                if (i < transactions.size() - 1) {
+                    bw.write(",");
+                }
+                bw.write("\n");
+            }
+
+            bw.write("]");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save transactions", e);
+        }
+    }
+
+    public static List<Transaction> loadTransactions(String fileName) {
+        List<Transaction> transactions = new ArrayList<>();
+
+        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            String accountNumber = null;
+            AccountTP accType = null;
+            TransactionType type = null;
+            double balance = 0.0;
+            double amount = 0;
+            LocalDate date = null;
+
+            while((line = br.readLine()) != null) {
+                line = line.trim();
+
+                if (line.equals("[") || line.equals("]") || line.isEmpty()) continue; // Skip array brackets
+
+                if(line.equals("{")) {
+                    accountNumber = null;
+                    accType = null;
+                    type = null;
+                    balance = 0.0;
+                    amount = 0;
+                    date = null;
+                }
+
+                if (line.contains("\"accountNumber\"")) {
+                    accountNumber = line.split(":")[1] // retrieves the second half aka the accountNumber
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+                }
+
+                if(line.contains("\"accountType\"")) {
+                    String strAccType = line.split(":")[1]
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+
+                    accType = AccountTP.valueOf(strAccType);
+                }
+
+
+                if (line.contains("\"type\"")) {
+                    String typeStr = line.split(":")[1]
+                            .replace("\"", "")
+                            .replace(",", "")
+                            .trim();
+
+                    type = TransactionType.valueOf(typeStr);
+                }
+
+                if (line.contains("\"balance\"")) {
+                    balance = Double.parseDouble(
+                            line.split(":")[1]
+                                    .replace(",", "")
+                                    .trim()
+                    );
+                }
+
+                if (line.contains("\"amount\"")) {
+                    amount = Double.parseDouble(
+                            line.split(":")[1]
+                                    .replace(",", "")
+                                    .trim()
+                    );
+                }
+
+                if (line.contains("\"date\"")) {
+                    date = LocalDate.parse(
+                            line.split(":")[1]
+                                    .replace("\"", "")
+                                    .replace(",", "")
+                                    .trim()
+                    );
+                }
+
+                if(line.startsWith("}") && accountNumber != null) {
+                    transactions.add(new Transaction(accountNumber, accType, type, balance, amount, date));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        return transactions;
+    }
+}
+
