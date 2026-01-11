@@ -1,10 +1,10 @@
-package com.example.springbootdb;
+package com.example.bankingsystemsb.model;
 
 public abstract class AccountType {
 
-String accountNumber;
-String accountHolder;
-double balance;
+    public String accountNumber;
+    public String accountHolder;
+    public double balance;
 
     public AccountType(String accountNumber, String accountHolder, double balance) {
         this.accountNumber = accountNumber;
@@ -21,5 +21,13 @@ double balance;
         return "AccountNumber: " + accountNumber +
                 ", AccountHolder: " + accountHolder +
                 ", Balance: $" + String.format("%.2f", balance);
+    }
+
+    public double getBalance() {
+        return this.balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

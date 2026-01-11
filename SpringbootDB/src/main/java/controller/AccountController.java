@@ -1,51 +1,81 @@
 package com.example.bankingsystemsb.controller;
 
-import com.example.bankingsystemsb.Transaction;
-import com.example.bankingsystemsb.TransactionType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.bankingsystemsb.model.BankingUser;
+import com.example.bankingsystemsb.service.AccountUserService;
 import org.springframework.http.ResponseEntity;
-import FileManager.FileManager;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/accounts")
-
 public class AccountController {
-    @GetMapping("/{accountNumber}/transactions")
-    public ResponseEntity<List<Transaction>> getAccountTransactions(@PathVariable String accountNumber) {
-        List<Transaction> transactions = FileManager.loadTransactions("Transactions.json");
 
-        List<Transaction> userTransactions = transactions.stream().
-                                             filter(t -> t.getAccountNumber().equals(accountNumber)).
-                                             collect(Collectors.toList());
+    private final AccountUserService accountService;
 
-        return ResponseEntity.ok(userTransactions);
+    public AccountController(AccountUserService accountService) {
+        this.accountService = accountService;
     }
 
-    @GetMapping("/{accountNumber}/transactions/{type}")
-    public ResponseEntity<List<Transaction>> getAccountTransactionsByType(@PathVariable String accountNumber, @PathVariable String type) {
-        List<Transaction> transactions = FileManager.loadTransactions("Transactions.json");
-
-        TransactionType transactionType;
-
-        try {
-            transactionType = TransactionType.valueOf(type.toUpperCase());
-        } catch  (Exception e) {
-            return ResponseEntity.badRequest().body(List.of());
-        }
-
-        List<Transaction> filteredByType = transactions.stream()
-                .filter(t -> t.getAccountNumber().equals(accountNumber))
-                .filter(t -> t.getType().equals(transactionType))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(filteredByType);
+    @PostMapping("/create")
+    public ResponseEntity<BankingUser> createUser(@RequestBody BankingUser user) {
+        return ResponseEntity.ok(accountService.createUser(user));
     }
 
+    @PutMapping("/deposit")
+    public ResponseEntity<Void> deposit(
+            @RequestParam String accountNumber,
+            @RequestParam double amount) {
+
+        accountService.deposit(accountNumber, amount);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update/{accountNumber}")
+    public ResponseEntity<Void> updateUser(
+            @PathVariable String accountNumber,
+            @RequestBody BankingUser user) {
+
+        accountService.updateUser(accountNumber, user);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/deactivate")
+    public ResponseEntity<String> deactivateUser(@RequestParam String accountNumber) {
+        accountService.deactivateUser(accountNumber);
+        return ResponseEntity.ok("Sucessfully deactivated account");
+    }
+
+    @PutMapping("/reactivate")
+    public ResponseEntity<Void> reactivateUser(@RequestParam String accountNumber) {
+        accountService.reactivateUser(accountNumber);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<BankingUser>> getUsersByStatus(
+            @RequestParam boolean active) {
+
+        return ResponseEntity.ok(accountService.getUsersByStatus(active));
+    }
+
+    @GetMapping("/paginatedData")
+    public ResponseEntity<List<BankingUser>> getPaginatedUsers(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestParam(required = false) Double minBalance) {
+
+        return ResponseEntity.ok(
+                accountService.getUsersPaginated(page, size, sort, order, minBalance)
+        );
+    }
+
+    @GetMapping("/bankTotal")
+    public ResponseEntity<Double> bankTotal() {
+        return ResponseEntity.ok(
+                accountService.calculateBankTotal("AccountsDB.txt")
+        );
+    }
 }
