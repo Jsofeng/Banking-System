@@ -7,6 +7,7 @@ import com.example.bankingsystemsb.model.BankingUser;
 import com.example.bankingsystemsb.model.Transaction;
 import com.example.bankingsystemsb.model.AccountTP;
 import com.example.bankingsystemsb.model.TransactionType;
+import com.example.bankingsystemsb.repository.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -60,29 +61,52 @@ public class TransactionService {
 
     public Transaction createTransaction(
             String accountNumber,
-            AccountTP accountType,
-            TransactionType type,
+            String accountType,
+            String type,
             double amount
     ) {
-        List<Transaction> transactions = FileManager.loadTransactions("Transactions.json");
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
 
-        double balance = 0;
+        AccountTP accountTP;
+        TransactionType transactionType;
+
+        try {
+            accountTP = AccountTP.valueOf(accountType.toUpperCase());
+            transactionType = TransactionType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid accountType or transaction type");
+        }
+
+        List<Transaction> transactions =
+                FileManager.loadTransactions("Transactions.json");
+
+        double balance = 0.0;
         for (int i = transactions.size() - 1; i >= 0; i--) {
-            if (transactions.get(i).getAccountNumber().equals(accountNumber)) {
-                balance = transactions.get(i).getBalance();
+            Transaction t = transactions.get(i);
+
+            if (t.getAccountNumber().equals(accountNumber)
+                    && t.getAccountType() == accountTP) {
+                balance = t.getBalance();
                 break;
             }
         }
 
-        switch (type) {
+        switch (transactionType) {
             case DEPOSIT -> balance += amount;
-            case WITHDRAW, ETRANSFER -> balance -= amount;
+            case WITHDRAW, ETRANSFER -> {
+                if (balance < amount) {
+                    throw new IllegalArgumentException("Insufficient funds");
+                }
+                balance -= amount;
+            }
         }
 
         Transaction tx = new Transaction(
                 accountNumber,
-                accountType,
-                type,
+                accountTP,
+                transactionType,
                 balance,
                 amount,
                 LocalDate.now()
@@ -94,13 +118,21 @@ public class TransactionService {
         return tx;
     }
 
+
     /* ================= FILTER BY TYPE ================= */
 
     public List<Transaction> getTransactionsByType(String accountNumber, TransactionType type) {
+        if(type == null) {
+            return FileManager.loadTransactions("Transactions.json").stream().
+                    filter(t -> t.getAccountNumber().equals(accountNumber)).toList();
+        }
+
         return FileManager.loadTransactions("Transactions.json")
                 .stream()
                 .filter(t -> t.getAccountNumber().equals(accountNumber))
                 .filter(t -> t.getType() == type)
                 .toList();
     }
+
+
 }
