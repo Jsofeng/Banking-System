@@ -425,6 +425,15 @@ public class BankingUserController {
 
             bankingUsers.add(new BankingUser(acc, name, id, bal, true));
         }
+<<<<<<< HEAD
+<<<<<<< HEAD
+	FileManager.saveBankingUsers(bankingUsers);
+=======
+	FileManager.saveBankingUsers(bankingUsers)
+>>>>>>> beta
+        return bankingUsers; // auto converst to JSON format
+=======
+>>>>>>> beta
 
         FileManager.saveAllUsers("AccountsDB.txt", bankingUsers);
         return bankingUsers;
