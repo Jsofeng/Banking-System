@@ -46,4 +46,36 @@ public class TransactionController {
                 transactionService.getTransactionsByType(accountNumber, type)
         );
     }
+
+ @PostMapping("/transferData")
+    public ResponseEntity<Transaction> transferData(
+            @RequestParam String accountNumber,
+            @RequestParam String accountType,
+            @RequestParam String type,
+            @RequestParam double amount) {
+
+        return ResponseEntity.ok(transactionService.createTransaction(accountNumber, accountType, type, amount));
+    }
+
+    @GetMapping("/transaction/{accountNumber}") //http://localhost:8080/transactions/transaction/577420589159?&type=DEPOSIT
+    public ResponseEntity<List<Transaction>> getTransactionsByType(
+            @PathVariable String accountNumber,
+            @RequestParam(required = false) TransactionType type) {
+
+        return ResponseEntity.ok(
+                transactionService.getTransactionsByType(accountNumber, type)
+        );
+    }
+
+    @GetMapping("/transaction/create/{accountNumber}/{accountType}/{type}/{amount}")
+    public ResponseEntity<Transaction> createTransaction(
+            @PathVariable String accountNumber,
+            @PathVariable String accountType,
+            @PathVariable String type,
+            @PathVariable double amount) {
+
+        return ResponseEntity.ok(transactionService.createTransaction(accountNumber, accountType, type, amount));
+    }
+
 }
+
