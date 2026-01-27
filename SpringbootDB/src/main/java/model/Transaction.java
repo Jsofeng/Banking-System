@@ -1,64 +1,39 @@
-package com.example.bankingsystemsb;
+package com.example.bankingsystemsb.model;
 
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "transactions") // table name in PostgreSQL
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // primary key
+
+    @Column(nullable = false)
     private String accountNumber;
-    private TransactionType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccountTP accountType; // make sure this is an enum
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionType type; // enum for DEPOSIT, WITHDRAW, etc.
+
+    @Column(nullable = false)
     private double balance;
+
+    @Column(nullable = false)
     private double amount;
+
+    @Column(nullable = false)
     private LocalDate date;
-
-    public Transaction() {}
-
-    public Transaction(String accountNumber, TransactionType type, double balance, double amount, LocalDate date) {
-	this.accountNumber = accountNumber;
-        this.type = type;
-	this.balance = balance;
-        this.amount = amount;
-        this.date = date;
-    }
-
-    public String accountNumber() {
-	return accountNumber;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public double getBalance() {
-	return balance;
-    }
-
-    public double getAmount() {
-	return amount;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-
 }
-
