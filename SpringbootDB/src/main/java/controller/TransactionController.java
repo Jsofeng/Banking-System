@@ -1,7 +1,8 @@
 package com.example.bankingsystemsb.controller;
 
-import com.example.bankingsystemsb.model.Transaction;
-import com.example.bankingsystemsb.model.TransactionType;
+import com.example.bankingsystemsb.model.*;
+import com.example.bankingsystemsb.repository.AccountRepository;
+import com.example.bankingsystemsb.service.AccountService;
 import com.example.bankingsystemsb.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,14 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionController {
 
-    private final TransactionService transactionService;
+    private final TransactionService transactionService; // TransactionService inherits from JPA
+    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, AccountRepository accountRepository) {
         this.transactionService = transactionService;
+        this.accountRepository = accountRepository;
+        this.accountService = new AccountService(accountRepository);
     }
 
     @GetMapping("/summary/{accountNumber}")
@@ -29,25 +34,26 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transfer(
-            @RequestParam String fromAccount,
-            @RequestParam String toAccount,
+            @RequestParam String fromAccountNumber,
+            @RequestParam String toAccountNumber,
             @RequestParam double amount) {
 
-        transactionService.transfer(fromAccount, toAccount, amount);
+        // Fetch accounts from the database
+        Account from = accountRepository.findByAccountNumber(fromAccountNumber);
+        if(from == null) {
+            throw new IllegalArgumentException("From account not found");
+        }
+        Account to = accountRepository.findByAccountNumber(toAccountNumber);
+        if(to == null) {
+            throw new IllegalArgumentException("To account not found");
+        }
+
+        transactionService.transfer(from, to, amount);
+
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/type/{accountNumber}/{type}")
-    public ResponseEntity<List<Transaction>> getTransactionsByType(
-            @PathVariable String accountNumber,
-            @PathVariable TransactionType type) {
-
-        return ResponseEntity.ok(
-                transactionService.getTransactionsByType(accountNumber, type)
-        );
-    }
-
- @PostMapping("/transferData")
+    @PostMapping("/transferData")
     public ResponseEntity<Transaction> transferData(
             @RequestParam String accountNumber,
             @RequestParam String accountType,
@@ -66,8 +72,8 @@ public class TransactionController {
                 transactionService.getTransactionsByType(accountNumber, type)
         );
     }
-
-    @GetMapping("/transaction/create/{accountNumber}/{accountType}/{type}/{amount}")
+    //@PostMapping("/transaction/create") for @RequestParam
+    @PostMapping("/transaction/create/{accountNumber}/{accountType}/{type}/{amount}")
     public ResponseEntity<Transaction> createTransaction(
             @PathVariable String accountNumber,
             @PathVariable String accountType,
@@ -77,5 +83,9 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.createTransaction(accountNumber, accountType, type, amount));
     }
 
-}
+    @PutMapping("/accounts/updateStatus/{accountNumber}")
+    public ResponseEntity<Account> updateStatus(@PathVariable String accountNumber, @RequestParam String status) {
 
+        return ResponseEntity.ok(accountService.updateAccountStatus(accountNumber, status));
+    }
+}
