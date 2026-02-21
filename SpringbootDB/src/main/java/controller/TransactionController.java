@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionController {
 
-    private final TransactionService transactionService; // TransactionService inherits from JPA
+    private final TransactionService transactionService; 
     private final AccountRepository accountRepository;
     private final AccountService accountService;
 
@@ -56,14 +56,14 @@ public class TransactionController {
     @PostMapping("/transferData")
     public ResponseEntity<Transaction> transferData(
             @RequestParam String accountNumber,
-            @RequestParam String accountType,
-            @RequestParam String type,
+            @RequestParam AccountTP accountType,
+            @RequestParam TransactionType type,
             @RequestParam double amount) {
 
         return ResponseEntity.ok(transactionService.createTransaction(accountNumber, accountType, type, amount));
     }
 
-    @GetMapping("/transaction/{accountNumber}") //http://localhost:8080/transactions/transaction/577420589159?&type=DEPOSIT
+    @GetMapping("/transaction/{accountNumber}")
     public ResponseEntity<List<Transaction>> getTransactionsByType(
             @PathVariable String accountNumber,
             @RequestParam(required = false) TransactionType type) {
@@ -76,8 +76,8 @@ public class TransactionController {
     @PostMapping("/transaction/create/{accountNumber}/{accountType}/{type}/{amount}")
     public ResponseEntity<Transaction> createTransaction(
             @PathVariable String accountNumber,
-            @PathVariable String accountType,
-            @PathVariable String type,
+            @PathVariable AccountTP accountType,
+            @PathVariable TransactionType type,
             @PathVariable double amount) {
 
         return ResponseEntity.ok(transactionService.createTransaction(accountNumber, accountType, type, amount));
