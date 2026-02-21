@@ -35,28 +35,24 @@ public class TransactionService {
     }
 
     /* ================= CREATE TRANSACTION ================= */
-    public Transaction createTransaction(String accountNumber, String accountType, String type, double amount) {
+    public Transaction createTransaction(
+            String accountNumber,
+            AccountTP accountType,
+            TransactionType transactionType,
+            double amount) {
+
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be positive");
         }
-
-        AccountTP accountTP;
-        TransactionType transactionType;
-
-        try {
-            accountTP = AccountTP.valueOf(accountType.toUpperCase());
-            transactionType = TransactionType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid accountType or transaction type");
-        }
-
-        // Get last balance from DB
-        double balance = transactionRepository.findTopByAccountNumberAndAccountTypeOrderByDateDesc(accountNumber, accountTP)
+       // Get last balance from DB (“Get the most recent transaction for this account and account type. if it exists, use its balance. If it doesn’t exist, start at 0.”
+        double balance = transactionRepository
+                .findTopByAccountNumberAndAccountTypeOrderByDateDesc(accountNumber, accountType)
                 .map(Transaction::getBalance)
                 .orElse(0.0);
 
         switch (transactionType) {
             case DEPOSIT -> balance += amount;
+
             case WITHDRAW, ETRANSFER -> {
                 if (balance < amount) {
                     throw new IllegalArgumentException("Insufficient funds");
@@ -67,14 +63,14 @@ public class TransactionService {
 
         Transaction tx = Transaction.builder()
                 .accountNumber(accountNumber)
-                .accountType(accountTP)
+                .accountType(accountType)
                 .type(transactionType)
                 .balance(balance)
                 .amount(amount)
                 .date(LocalDate.now())
                 .build();
 
-        return transactionRepository.save(tx); // persists in DB
+        return transactionRepository.save(tx);
     }
 
     @Transactional
@@ -87,14 +83,12 @@ public class TransactionService {
             throw new IllegalArgumentException("Insufficient funds");
         }
 
-        // 1️⃣ Update balances
         from.setBalance(from.getBalance() - amount);
         to.setBalance(to.getBalance() + amount);
 
         accountRepository.save(from);
         accountRepository.save(to);
 
-        // 2️⃣ Sender transaction
         Transaction outTx = Transaction.builder()
                 .accountNumber(from.getAccountNumber())
                 .accountType(from.getAccountType())
@@ -104,7 +98,6 @@ public class TransactionService {
                 .date(LocalDate.now())
                 .build();
 
-        // 3️⃣ Receiver transaction
         Transaction inTx = Transaction.builder()
                 .accountNumber(to.getAccountNumber())
                 .accountType(to.getAccountType())
@@ -122,3 +115,4 @@ public class TransactionService {
 
 
 }
+
