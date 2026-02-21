@@ -27,7 +27,13 @@ public class User {
 
     private boolean active;
 
-    @OneToOne
-    @JoinColumn(name = "banking_user_id")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_type")
+    private AccountTP accountTP;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "banking_user_id") //@JoinColumn → this table owns the foreign key
+   
     private BankingUser bankingUser;
+
 }
