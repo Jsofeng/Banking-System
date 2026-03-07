@@ -58,6 +58,48 @@ public class UserService {
         bankingUserJpaRepository.save(bankingUser);
     }
 
+    @Transactional
+    public void withdraw(String userName, double withdrawAmount) {
+        if(withdrawAmount <= 0) {
+            throw new IllegalArgumentException("Deposit amount must be greater than 0");
+        }
+
+        User user = userJpaRepository.findByUsername(userName).orElseThrow(() -> new RuntimeException("User not found"));
+
+        BankingUser bankingUser = user.getBankingUser();
+
+        if(bankingUser.getBalance() < withdrawAmount) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+
+        bankingUser.setBalance(bankingUser.getBalance() - withdrawAmount);
+        bankingUserJpaRepository.save(bankingUser);
+
+        transactionService.createTransaction(
+
+                bankingUser.getDebitCardNumber(),
+                bankingUser.getAccountType(),
+                TransactionType.WITHDRAW,
+                withdrawAmount
+        );
+
+
+
+        }
+
+        public List<Transaction> getUserTransactionAndType(String username, TransactionType type) {
+        if (type == null) {
+            User user = userJpaRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            return transactionJpaRepository.findAllTransactionsForUser(user.getBankingUser().getId());
+        }
+
+        User user =  userJpaRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        return transactionJpaRepository.findTransactionsForUserByType(user.getBankingUser().getId(), type);
+    }
+
+        public List<Transaction> getTop10UserTransactions(Long userId) {
+            return transactionJpaRepository.findTop10ByBankingUserIdOrderByDateDesc(userId);
+        }
 
 }
 

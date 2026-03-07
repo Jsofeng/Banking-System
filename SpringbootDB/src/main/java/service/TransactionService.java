@@ -114,5 +114,59 @@ public class TransactionService {
     }
 
 
+    @Transactional
+    public void transfer(Long senderId, Long receiverId, double amount) {
+        BankingUser sender = bankingUserRepository.findByIdForUpdate(senderId).
+                orElseThrow(() -> new RuntimeException("sender not found"));
+
+        BankingUser receiver = bankingUserRepository.findByIdForUpdate(receiverId).
+                orElseThrow(() -> new RuntimeException("receiver not found"));
+
+        if (sender.getBalance() < amount) {
+            throw new IllegalArgumentException("Insufficient funds");
+        }
+
+        sender.setBalance(sender.getBalance() - amount);
+        receiver.setBalance(receiver.getBalance() + amount);
+
+        bankingUserRepository.save(sender);
+        bankingUserRepository.save(receiver);
+
+        Transaction withdraw = Transaction.builder()
+                .reference(generateReference())
+                .accountNumber(sender.getDebitCardNumber())
+                .accountType(sender.getAccountType())
+                .type(TransactionType.WITHDRAW)
+                .balance(sender.getBalance())
+                .amount(amount)
+                .date(LocalDate.now())
+                .bankingUser(sender)
+                .build();
+
+        Transaction deposit = Transaction.builder()
+                .reference(generateReference())
+                .accountNumber(receiver.getDebitCardNumber())
+                .accountType(receiver.getAccountType())
+                .type(TransactionType.DEPOSIT)
+                .balance(receiver.getBalance())
+                .amount(amount)
+                .date(LocalDate.now())
+                .bankingUser(receiver)
+                .build();
+
+        transactionRepository.save(withdraw);
+        transactionRepository.save(deposit);
+    }
+
+    public Page<Transaction> getTransactionsByUser(Long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size); // page starts from 0
+        return transactionRepository.findByBankingUserId(id, pageable);
+    }
+
+    public Page<Transaction> getTransactionsByUserIdAndType(Long id, TransactionType type, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return transactionRepository.findByBankingUserIdAndType(id, type, pageable);
+    }
+
 }
 

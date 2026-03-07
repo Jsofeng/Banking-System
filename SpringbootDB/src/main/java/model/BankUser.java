@@ -1,4 +1,7 @@
 package com.example.bankingsystemsb.model;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,4 +41,9 @@ public class BankingUser { //JAVA_HOME=$(/usr/libexec/java_home -v 17) mvn clean
     //BankingUser.java is referenced by User.java
     @OneToOne(mappedBy = "bankingUser") 
     private User user;
+
+
+    @OneToMany(mappedBy = "bankingUser")
+    @JsonManagedReference
+    private List<Transaction> transactions;
 }
